@@ -67,3 +67,14 @@ class ParcelModel:
             parcel['status'] = data['status']
             return True
         return False
+
+    def get_user_orders(self, user_id):
+        """
+        Get all orders belonging to a specific user
+        :param user_id:
+        :return: returns all parcel orders for a specific user or None
+        """
+        parcels = [item for item in ParcelModel.parcels
+                   if item['sender_id'] == user_id]
+
+        return parcels

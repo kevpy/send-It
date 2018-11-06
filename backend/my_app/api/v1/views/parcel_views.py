@@ -106,3 +106,36 @@ class CancelOrder(Resource, ParcelModel):
                 "status": "Not Found"
             }
         ), 404)
+
+
+class UserOrders(Resource, ParcelModel):
+    """This class gets all orders for a user"""
+
+    def get(self, user_id):
+        """
+        Gets all orders belonging to a specific user
+        :param user_id:
+        :return: returns a json response of user's orders
+        """
+        try: user_id = int(user_id)
+        except: return make_response(
+                jsonify(
+                    {
+                        "Message": "Please provide a valid parcel id(int)",
+                        "status": "Bad request"
+                    }
+                ), 400)
+        parcels = self.get_user_orders(user_id)
+        if len(parcels) > 0:
+            return make_response(jsonify(
+                {
+                    "Parcels": parcels,
+                    "Status": "Ok"
+                }
+            ), 200)
+        return make_response(jsonify(
+            {
+                "Message": "Requested resources not found",
+                "status": "Not Found"
+            }
+        ), 404)
