@@ -3,11 +3,8 @@ Creates views for parcels. These are POST, GET, PUT
 """
 
 from flask import request, make_response, jsonify
-from flask_restful import Api, Resource
+from flask_restful import Resource
 from ..models.parcel import ParcelModel
-from ...v1 import version1_bp
-
-parcels_bp = Api(version1_bp)
 
 
 class Parcels(Resource):
@@ -56,27 +53,56 @@ class SpecificParcel(Resource, ParcelModel):
     def __init__(self):
         pass
 
-    def get(self, parcelId):
+    def get(self, parcel_id):
         """
         Gets a single parcel order
         :param parcelId:
         :return: Returns a json response
         """
-        if not parcelId or not isinstance(int(parcelId), int):
-            return make_response(
-                jsonify({
-                    "Message": "Please provide a valid parcel id(int)",
-                    "status": 404
-                }))
-        single_parcel = self.get_specific_parcel(parcelId)
+        try: parcel_id = int(parcel_id)
+        except: return make_response(
+                jsonify(
+                    {
+                        "Message": "Please provide a valid parcel id(int)",
+                        "status": "Bad request"
+                    }
+                ), 400)
+        single_parcel = self.get_specific_parcel(parcel_id)
         if single_parcel is not None:
-            return make_response(jsonify({"parcel": single_parcel, "status": 200}))
+            return make_response(jsonify(
+                {
+                    "parcel": single_parcel, "status": "OK"
+                }
+            ), 200)
         return make_response(
                 jsonify({
                     "Parcel": "No parcel found",
-                    "status": 404
-                }))
+                    "status": "Not Found"
+                }), 404)
 
 
-parcels_bp.add_resource(Parcels, "/parcels")
-parcels_bp.add_resource(SpecificParcel, "/parcels/<int:parcelId>")
+class CancelOrder(Resource, ParcelModel):
+    """This class cancels an order"""
+
+    def put(self, parcel_id):
+        """
+        Updates the status of a parcel order to canceled
+        :param parcel_id:
+        :return: Returns a json response
+        """
+        data = request.get_json() or {}
+        change = self.cancel_order(parcel_id, data)
+
+        if change is not False:
+            return make_response(jsonify(
+                {
+                    "Message": "success",
+                    "status": "Accepted"
+                }
+            ), 202)
+        return make_response(jsonify(
+            {
+                "Message": "The order requested does not exist",
+                "status": "Not Found"
+            }
+        ), 404)

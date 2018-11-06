@@ -1,1 +1,0 @@
-from my_app.api import v1

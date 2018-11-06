@@ -52,3 +52,18 @@ class ParcelModel:
         parcel = next((item for item in ParcelModel.parcels
                        if item['parcel_id'] == parcel_id), None)
         return parcel
+
+    def cancel_order(self, parcel_id, data):
+        """
+        Gets a parcel order and changes it's status to canceled.
+        :param parcel_id:
+        :param data:
+        :return:
+        """
+        parcel = next((item for item in ParcelModel.parcels
+                       if item['parcel_id'] == parcel_id), None)
+
+        if parcel is not None:
+            parcel['status'] = data['status']
+            return True
+        return False
