@@ -37,5 +37,17 @@ class Parcels(Resource):
         res.content_type = 'application/json;charset=utf-8'
         return res
 
+    def get(self):
+        """Gets all parcel orders
+        :return: Returns a json response
+        """
+        parcel = ParcelModel()
+
+        payload = {"Status": "OK", "Parcels": parcel.get_all()}
+
+        res = make_response(jsonify(payload), 200)
+        res.content_type = 'application/json;charset=utf-8'
+        return res
+
 
 parcels_bp.add_resource(Parcels, "/parcels")

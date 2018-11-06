@@ -38,3 +38,7 @@ class ParcelModel:
         ParcelModel.parcels.append(parcel)
 
         return parcel
+
+    def get_all(self):
+        """Gets all parcel orders"""
+        return ParcelModel.parcels
