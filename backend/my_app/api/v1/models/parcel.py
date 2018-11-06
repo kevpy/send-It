@@ -42,3 +42,13 @@ class ParcelModel:
     def get_all(self):
         """Gets all parcel orders"""
         return ParcelModel.parcels
+
+    def get_specific_parcel(self, parcel_id):
+        """
+        Gets a specific parcel order when given a parcel id
+        :param parcel_id:
+        :return: returns a parcel order or None
+        """
+        parcel = next((item for item in ParcelModel.parcels
+                       if item['parcel_id'] == parcel_id), None)
+        return parcel
