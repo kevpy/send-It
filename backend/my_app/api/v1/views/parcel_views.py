@@ -142,7 +142,7 @@ class UserOrders(Resource, ParcelModel):
             return make_response(jsonify(
                 {
                     "Parcels": parcels,
-                    "Status": "Ok"
+                    "status": "OK"
                 }
             ), 200)
         return make_response(jsonify(

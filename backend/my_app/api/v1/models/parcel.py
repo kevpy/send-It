@@ -1,9 +1,35 @@
 """This is the parcel model."""
+import uuid
 
 
 class ParcelModel:
     """This class creates, gets, updates a parcel oerder"""
-    parcels = []
+    parcels = [
+        {
+            "parcel_id": 1,
+            "sender_id": 1,
+            "pickup_location": "Nakuru",
+            "destination": "Nairobi",
+            "weight": "10KG",
+            "status": "pending delivery"
+        },
+        {
+            "parcel_id": 2,
+            "sender_id": 2,
+            "pickup_location": "Nakuru",
+            "destination": "Eldoret",
+            "weight": "5KG",
+            "status": "pending delivery"
+        },
+        {
+            "parcel_id": 3,
+            "sender_id": 2,
+            "pickup_location": "Nairobi",
+            "destination": "Mombasa",
+            "weight": "1KG",
+            "status": "pending delivery"
+        }
+    ]
 
     def __init__(self):
         pass
@@ -24,7 +50,7 @@ class ParcelModel:
         :return: returns a dictionary object of a newly created parcel
                 order
         """
-        parcel_id = len(ParcelModel.parcels) + 1
+        parcel_id = uuid.uuid4().int >> 64
 
         parcel = {
             'parcel_id': parcel_id,
