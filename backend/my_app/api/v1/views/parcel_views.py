@@ -48,7 +48,7 @@ class Parcels(Resource):
         """
         parcel = ParcelModel()
 
-        payload = {"Status": "OK", "Parcels": parcel.get_all()}
+        payload = {"status": "OK", "Parcels": parcel.get_all()}
 
         res = make_response(jsonify(payload), 200)
         res.content_type = 'application/json;charset=utf-8'
