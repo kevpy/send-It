@@ -21,6 +21,14 @@ class Parcels(Resource):
         """
         data = request.get_json() or {}
 
+        if not data or data == {}:
+            return make_response(jsonify(
+                {
+                    "Message": "Post data not provided",
+                    "status": "Bad Request"
+                }
+            ), 400)
+
         parcel = ParcelModel()
         parcel.add_parcel(
             sender_id=data['sender_id'],
@@ -29,7 +37,7 @@ class Parcels(Resource):
             weight=data['weight'],
             status=data['status'])
 
-        payload = {'status': 'created'}
+        payload = {'status': 'Created'}
         res = make_response(jsonify(payload), 201)
         res.content_type = 'application/json;charset=utf-8'
         return res
@@ -59,8 +67,10 @@ class SpecificParcel(Resource, ParcelModel):
         :param parcelId:
         :return: Returns a json response
         """
-        try: parcel_id = int(parcel_id)
-        except: return make_response(
+        try:
+            parcel_id = int(parcel_id)
+        except Exception:
+            return make_response(
                 jsonify(
                     {
                         "Message": "Please provide a valid parcel id(int)",
@@ -75,10 +85,10 @@ class SpecificParcel(Resource, ParcelModel):
                 }
             ), 200)
         return make_response(
-                jsonify({
+            jsonify({
                     "Parcel": "No parcel found",
                     "status": "Not Found"
-                }), 404)
+                    }), 404)
 
 
 class CancelOrder(Resource, ParcelModel):
@@ -117,8 +127,10 @@ class UserOrders(Resource, ParcelModel):
         :param user_id:
         :return: returns a json response of user's orders
         """
-        try: user_id = int(user_id)
-        except: return make_response(
+        try:
+            user_id = int(user_id)
+        except Exception:
+            return make_response(
                 jsonify(
                     {
                         "Message": "Please provide a valid parcel id(int)",
