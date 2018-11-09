@@ -37,7 +37,8 @@ class ParcelModel:
     def add_parcel(self,
                    sender_id,
                    pickup_location,
-                   destination, weight,
+                   destination,
+                   weight,
                    status='penging_delivery'):
         """
         This method creates a new parcel delivery order
