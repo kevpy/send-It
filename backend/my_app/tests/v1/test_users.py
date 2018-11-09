@@ -7,30 +7,50 @@ valid_user = {
     "name": "Test2",
     "email": "user@email.com",
     "password": "password",
-    "role": "2"
+    "role": "user"
 }
 
 invalid_user = {
     "name": "Test",
     "email": "email.com",
     "password": "password",
-    "role": "2"
+    "role": "user"
 }
 
 existing_user = {
     "name": "Test",
     "email": "test@email.com",
     "password": "password",
-    "role": "2"
+    "role": "user"
 }
 
 some_missing = {
     "name": "Test",
     "password": "password",
-    "role": "2"
+    "role": "user"
 }
 
 empty_data = {}
+
+valid_email_login = {
+    "email": "test@email.com",
+    "password": "password"
+}
+
+invalid_email_login = {
+    "email": "testemail.com",
+    "password": "password"
+}
+
+wrong_login_password = {
+    "email": "test@email.com",
+    "password": "wrong"
+}
+
+user_doesnt_exist_login = {
+    "email": "new@email.com",
+    "password": "password"
+}
 
 
 class Testuser(object):
@@ -85,3 +105,51 @@ class Testuser(object):
         res_data = json.loads(response.data.decode())
         assert response.status_code == 400
         assert 'Bad Request' in res_data['status']
+
+    def test_valid_login(self, client):
+        """ This method tests for a valid login"""
+
+        response = client.post(
+            "/api/v1/login",
+            data=json.dumps(valid_email_login),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.data.decode())
+        assert response.status_code == 200
+        assert 'Successful login' in res_data['message']
+
+    def test_invalid_email_login(self, client):
+        """ This method tests for a invalid email address"""
+
+        response = client.post(
+            "/api/v1/login",
+            data=json.dumps(invalid_email_login),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'Bad Request' in res_data['status']
+
+    def test_wrong_login_password(self, client):
+        """ This method tests for a invalid password"""
+
+        response = client.post(
+            "/api/v1/login",
+            data=json.dumps(wrong_login_password),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.data.decode())
+        assert response.status_code == 400
+        assert 'Incorrect Password' in res_data['message']
+
+    def test_user_doesnt_exist(self, client):
+        """ This method tests for user not registered"""
+
+        response = client.post(
+            "/api/v1/login",
+            data=json.dumps(user_doesnt_exist_login),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.data.decode())
+        assert response.status_code == 404
+        assert "User doesn't exists" in res_data['message']

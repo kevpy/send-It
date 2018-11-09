@@ -15,3 +15,16 @@ class UserPostSchema(Schema):
             valid.load(json)
         except ValidationError as e:
             return e.messages
+
+
+class UserLoginSchema(Schema):
+    """ This class creates a schema to validate user json post data"""
+    email = fields.Email(required=True)
+    password = fields.String(required=True)
+
+    def validate_login(self, json=None):
+        valid = UserLoginSchema()
+        try:
+            valid.load(json)
+        except ValidationError as e:
+            return e.messages
