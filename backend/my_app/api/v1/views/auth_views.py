@@ -4,6 +4,7 @@ Both registration and login views.
 """
 from flask import jsonify, make_response, request
 from flask_restful import Resource
+from flask_jwt_extended import create_access_token
 from ..models.user_model import User
 from ..validators import UserPostSchema, UserLoginSchema
 
@@ -73,6 +74,8 @@ class Login(Resource, User):
                 "message": "Incorrect Password",
             }), 400)
 
+        access_token = create_access_token(identity=user['email'])
         return make_response(jsonify({
-            "message": "Successful login"
+            "message": "Successful login",
+            "token": access_token
         }), 200)
