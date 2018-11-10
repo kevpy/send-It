@@ -8,7 +8,7 @@ def create_app():
     """Creates an instance of a flask application
     :returns returns an instance of a flask app
     """
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__)
     app.config["JWT_SECRET_KEY"] = "secret"
     jwt = JWTManager(app)
 
