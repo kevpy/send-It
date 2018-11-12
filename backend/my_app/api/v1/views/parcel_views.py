@@ -12,9 +12,6 @@ class Parcels(Resource):
     for a parcel order or parcels
     """
 
-    def __init__(self):
-        pass
-
     def post(self):
         """Saves a new parcel item
         :return: Returns a json response
@@ -30,16 +27,19 @@ class Parcels(Resource):
             ), 400)
 
         parcel = ParcelModel()
-        parcel.add_parcel(
+        my_parcel = parcel.add_parcel(
             sender_id=data['sender_id'],
             pickup_location=data['pickup_location'],
             destination=data['destination'],
             weight=data['weight'],
             status=data['status'])
 
-        payload = {'status': 'Created'}
+        payload = {
+            'status': 'Created',
+            "message": "Parcel Created",
+            "data": my_parcel
+        }
         res = make_response(jsonify(payload), 201)
-        res.content_type = 'application/json;charset=utf-8'
         return res
 
     def get(self):
@@ -51,15 +51,11 @@ class Parcels(Resource):
         payload = {"status": "OK", "Parcels": parcel.get_all()}
 
         res = make_response(jsonify(payload), 200)
-        res.content_type = 'application/json;charset=utf-8'
         return res
 
 
 class SpecificParcel(Resource, ParcelModel):
     """This class gets a single parcel order"""
-
-    def __init__(self):
-        pass
 
     def get(self, parcel_id):
         """
