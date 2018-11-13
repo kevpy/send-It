@@ -6,23 +6,20 @@ from flask import jsonify, make_response, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token
 from ..models.user_model import User
-from ..validators import UserPostSchema, UserLoginSchema
+from ..validators import UserPostSchema, UserLoginSchema, validate_json
 
 
 class Register(Resource, User):
     """ This class creates a view for registering a new user"""
-
-    def __init__(self):
-        pass
 
     def post(self):
         """
         Saves a new user
         :return: Returns a json response.
         """
-        validator = UserPostSchema()
+        schema = UserPostSchema()
         data = request.get_json() or {}
-        is_valid = validator.validate_post(data)
+        is_valid = validate_json(schema, data)
 
         if is_valid is not None:
             return make_response(jsonify({
@@ -35,28 +32,25 @@ class Register(Resource, User):
                 "message": "User already exists"
             }), 409)
         else:
-            self.add_user(data)
-            print(User.users)
+            user = self.add_user(data)
             return make_response(jsonify({
                 "message": "User saved",
-                "status": "Created"
+                "status": "Created",
+                "data": user
             }), 201)
 
 
 class Login(Resource, User):
     """This class creates a view for login/authentication"""
 
-    def __init__(self):
-        pass
-
     def post(self):
         """
         Authenticates a user with an email and password
         :return: Returns a json response
         """
-        validator = UserLoginSchema()
+        schema = UserLoginSchema()
         data = request.get_json() or {}
-        is_valid = validator.validate_login(data)
+        is_valid = validate_json(schema, data)
 
         if is_valid is not None:
             print(is_valid)

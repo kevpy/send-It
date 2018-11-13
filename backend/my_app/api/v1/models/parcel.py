@@ -1,5 +1,6 @@
 """This is the parcel model."""
 import uuid
+from flask import jsonify, make_response
 
 
 class ParcelModel:
@@ -30,9 +31,6 @@ class ParcelModel:
             "status": "pending delivery"
         }
     ]
-
-    def __init__(self):
-        pass
 
     def add_parcel(self,
                    sender_id,
@@ -87,13 +85,12 @@ class ParcelModel:
         :param data:
         :return:
         """
-        parcel = next((item for item in ParcelModel.parcels
-                       if item['parcel_id'] == parcel_id), None)
+        parcel = self.get_specific_parcel(parcel_id)
 
         if parcel is not None:
             parcel['status'] = data['status']
-            return True
-        return False
+            return parcel
+        return None
 
     def get_user_orders(self, user_id):
         """
@@ -105,3 +102,22 @@ class ParcelModel:
                    if item['sender_id'] == user_id]
 
         return parcels
+
+    def cast_id(self, my_id):
+        """
+        Casts a provided id to an integer
+        :param my_id:
+        :return:
+        """
+        try:
+            check_id = int(my_id)
+        except Exception:
+            return make_response(
+                jsonify(
+                    {
+                        "Message": "Please provide a valid parcel id(int)",
+                        "status": "Bad request"
+                    }
+                ), 400)
+        else:
+            return check_id

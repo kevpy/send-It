@@ -9,22 +9,22 @@ class UserPostSchema(Schema):
     password = fields.String(required=True)
     role = fields.String(required=True)
 
-    def validate_post(self, json=None):
-        valid = UserPostSchema()
-        try:
-            valid.load(json)
-        except ValidationError as e:
-            return e.messages
-
 
 class UserLoginSchema(Schema):
     """ This class creates a schema to validate user json post data"""
     email = fields.Email(required=True)
     password = fields.String(required=True)
 
-    def validate_login(self, json=None):
-        valid = UserLoginSchema()
-        try:
-            valid.load(json)
-        except ValidationError as e:
-            return e.messages
+
+def validate_json(my_schema, json=None):
+    """
+        This function takes in a schema and a json data object.
+        It then validate the json object from the schema.
+        :param my_schema:
+        :param json:
+        :return: Returns None, or a validation error message.
+        """
+    try:
+        my_schema.load(json)
+    except ValidationError as e:
+        return e.messages

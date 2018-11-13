@@ -12,9 +12,6 @@ class Parcels(Resource):
     for a parcel order or parcels
     """
 
-    def __init__(self):
-        pass
-
     def post(self):
         """Saves a new parcel item
         :return: Returns a json response
@@ -30,16 +27,19 @@ class Parcels(Resource):
             ), 400)
 
         parcel = ParcelModel()
-        parcel.add_parcel(
+        my_parcel = parcel.add_parcel(
             sender_id=data['sender_id'],
             pickup_location=data['pickup_location'],
             destination=data['destination'],
             weight=data['weight'],
             status=data['status'])
 
-        payload = {'status': 'Created'}
+        payload = {
+            'status': 'Created',
+            "message": "Parcel Created",
+            "data": my_parcel
+        }
         res = make_response(jsonify(payload), 201)
-        res.content_type = 'application/json;charset=utf-8'
         return res
 
     def get(self):
@@ -51,15 +51,11 @@ class Parcels(Resource):
         payload = {"status": "OK", "Parcels": parcel.get_all()}
 
         res = make_response(jsonify(payload), 200)
-        res.content_type = 'application/json;charset=utf-8'
         return res
 
 
-class SpecificParcel(Resource, ParcelModel):
+class SpecificParcel(Resource):
     """This class gets a single parcel order"""
-
-    def __init__(self):
-        pass
 
     def get(self, parcel_id):
         """
@@ -77,7 +73,9 @@ class SpecificParcel(Resource, ParcelModel):
                         "status": "Bad request"
                     }
                 ), 400)
-        single_parcel = self.get_specific_parcel(parcel_id)
+        parcel = ParcelModel()
+
+        single_parcel = parcel.get_specific_parcel(parcel_id)
         if single_parcel is not None:
             return make_response(jsonify(
                 {
@@ -91,7 +89,7 @@ class SpecificParcel(Resource, ParcelModel):
                     }), 404)
 
 
-class CancelOrder(Resource, ParcelModel):
+class CancelOrder(Resource):
     """This class cancels an order"""
 
     def put(self, parcel_id):
@@ -100,10 +98,12 @@ class CancelOrder(Resource, ParcelModel):
         :param parcel_id:
         :return: Returns a json response
         """
-        data = request.get_json() or {}
-        change = self.cancel_order(parcel_id, data)
 
-        if change is not False:
+        parcel = ParcelModel()
+        data = request.get_json() or {}
+        change = parcel.cancel_order(parcel_id, data)
+
+        if change is not None:
             return make_response(jsonify(
                 {
                     "Message": "success",
@@ -118,7 +118,7 @@ class CancelOrder(Resource, ParcelModel):
         ), 404)
 
 
-class UserOrders(Resource, ParcelModel):
+class UserOrders(Resource):
     """This class gets all orders for a user"""
 
     def get(self, user_id):
@@ -127,6 +127,8 @@ class UserOrders(Resource, ParcelModel):
         :param user_id:
         :return: returns a json response of user's orders
         """
+
+        parcel = ParcelModel()
         try:
             user_id = int(user_id)
         except Exception:
@@ -137,7 +139,7 @@ class UserOrders(Resource, ParcelModel):
                         "status": "Bad request"
                     }
                 ), 400)
-        parcels = self.get_user_orders(user_id)
+        parcels = parcel.get_user_orders(user_id)
         if len(parcels) > 0:
             return make_response(jsonify(
                 {
