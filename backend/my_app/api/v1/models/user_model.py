@@ -15,9 +15,6 @@ class User():
         "role": "user"
     }]
 
-    def __init__(self):
-        pass
-
     def add_user(self, data):
         """
         This method creates a new user and adds them to a list
