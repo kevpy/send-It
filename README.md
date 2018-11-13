@@ -1,6 +1,6 @@
 # SendIT
 
-[![Build Status](https://travis-ci.org/kevpy/SendIT.svg?branch=ft-user-login-apiv1-161773626)](https://travis-ci.org/kevpy/SendIT)  [![Coverage Status](https://coveralls.io/repos/github/kevpy/send-It/badge.svg?branch=ft-user-login-apiv1-161773626)](https://coveralls.io/github/kevpy/send-It?branch=ft-user-login-apiv1-161773626)  [![Maintainability](https://api.codeclimate.com/v1/badges/1aa534e219da7a29a899/maintainability)](https://codeclimate.com/github/kevpy/send-It/maintainability)
+[![Build Status](https://travis-ci.org/kevpy/send-It.svg?branch=ft-user-login-apiv1-161773626)](https://travis-ci.org/kevpy/send-It)  [![Coverage Status](https://coveralls.io/repos/github/kevpy/send-It/badge.svg?branch=ft-user-login-apiv1-161773626)](https://coveralls.io/github/kevpy/send-It?branch=ft-user-login-apiv1-161773626)  [![Maintainability](https://api.codeclimate.com/v1/badges/1aa534e219da7a29a899/maintainability)](https://codeclimate.com/github/kevpy/send-It/maintainability)
 
 **SendIt** is a courier service that helps users deliver parcels to different destinations.
 

@@ -102,22 +102,3 @@ class ParcelModel:
                    if item['sender_id'] == user_id]
 
         return parcels
-
-    def cast_id(self, my_id):
-        """
-        Casts a provided id to an integer
-        :param my_id:
-        :return:
-        """
-        try:
-            check_id = int(my_id)
-        except Exception:
-            return make_response(
-                jsonify(
-                    {
-                        "Message": "Please provide a valid parcel id(int)",
-                        "status": "Bad request"
-                    }
-                ), 400)
-        else:
-            return check_id

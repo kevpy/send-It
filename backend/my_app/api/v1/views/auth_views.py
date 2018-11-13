@@ -53,7 +53,6 @@ class Login(Resource, User):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            print(is_valid)
             return make_response(jsonify({
                 "Message": is_valid,
                 "status": "Bad Request"

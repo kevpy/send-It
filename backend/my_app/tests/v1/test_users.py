@@ -66,9 +66,9 @@ class Testuser(object):
             data=json.dumps(valid_user),
             content_type='application/json;charset=utf-8')
 
-        res_data = json.loads(response.data.decode())
-        assert response.status_code == 201
+        res_data = json.loads(response.get_data(as_text=True))
         assert 'Created' in res_data['status']
+        assert 'user@email.com' in str(res_data['data'])
 
     def test_user_exists(self, client):
         """ This method tests for a valid registration"""
@@ -78,7 +78,7 @@ class Testuser(object):
             data=json.dumps(existing_user),
             content_type='application/json;charset=utf-8')
 
-        res_data = json.loads(response.data.decode())
+        res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 409
         assert 'User already exists' in res_data['message']
 
@@ -90,9 +90,9 @@ class Testuser(object):
             data=json.dumps(empty_data),
             content_type='application/json;charset=utf-8')
 
-        res_data = json.loads(response.data.decode())
-        assert response.status_code == 400
+        res_data = json.loads(response.get_data(as_text=True))
         assert 'Bad Request' in res_data['status']
+        assert 'Missing data for required field.' in str(res_data['Message'])
 
     def test_some_missing_data(self, client):
         """ This method tests for a valid registration"""
@@ -102,21 +102,9 @@ class Testuser(object):
             data=json.dumps(empty_data),
             content_type='application/json;charset=utf-8')
 
-        res_data = json.loads(response.data.decode())
-        assert response.status_code == 400
+        res_data = json.loads(response.get_data(as_text=True))
         assert 'Bad Request' in res_data['status']
-
-    def test_valid_login(self, client):
-        """ This method tests for a valid login"""
-
-        response = client.post(
-            "/api/v1/login",
-            data=json.dumps(valid_email_login),
-            content_type='application/json;charset=utf-8')
-
-        res_data = json.loads(response.data.decode())
-        assert response.status_code == 200
-        assert 'Successful login' in res_data['message']
+        assert 'Missing data for required field.' in str(res_data['Message'])
 
     def test_invalid_email_login(self, client):
         """ This method tests for a invalid email address"""
@@ -126,9 +114,9 @@ class Testuser(object):
             data=json.dumps(invalid_email_login),
             content_type='application/json;charset=utf-8')
 
-        res_data = json.loads(response.data.decode())
-        assert response.status_code == 400
+        res_data = json.loads(response.get_data(as_text=True))
         assert 'Bad Request' in res_data['status']
+        assert 'Not a valid email address.' in str(res_data['Message'])
 
     def test_wrong_login_password(self, client):
         """ This method tests for a invalid password"""
