@@ -4,6 +4,7 @@ Creates views for parcels. These are POST, GET, PUT
 
 from flask import request, make_response, jsonify
 from flask_restful import Resource
+from flask_jwt_extended import jwt_required
 from ..models.parcel import ParcelModel
 
 
@@ -12,6 +13,7 @@ class Parcels(Resource):
     for a parcel order or parcels
     """
 
+    @jwt_required
     def post(self):
         """Saves a new parcel item
         :return: Returns a json response
@@ -42,6 +44,7 @@ class Parcels(Resource):
         res = make_response(jsonify(payload), 201)
         return res
 
+    @jwt_required
     def get(self):
         """Gets all parcel orders
         :return: Returns a json response
@@ -57,6 +60,7 @@ class Parcels(Resource):
 class SpecificParcel(Resource):
     """This class gets a single parcel order"""
 
+    @jwt_required
     def get(self, parcel_id):
         """
         Gets a single parcel order
@@ -92,6 +96,7 @@ class SpecificParcel(Resource):
 class CancelOrder(Resource):
     """This class cancels an order"""
 
+    @jwt_required
     def put(self, parcel_id):
         """
         Updates the status of a parcel order to canceled
@@ -122,6 +127,7 @@ class CancelOrder(Resource):
 class UserOrders(Resource):
     """This class gets all orders for a user"""
 
+    @jwt_required
     def get(self, user_id):
         """
         Gets all orders belonging to a specific user
