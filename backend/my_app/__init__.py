@@ -11,6 +11,7 @@ def create_app():
     app = Flask(__name__)
     app.config["JWT_SECRET_KEY"] = "secret"
     jwt = JWTManager(app)
+    app.config['PROPAGATE_EXCEPTIONS'] = True
 
     app.register_blueprint(version1_bp, url_prefix='/api/v1')
 

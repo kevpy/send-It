@@ -19,7 +19,7 @@ It has the following features:
 
 You can get a running instance of the API on **Heroku**. 
 Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkype).
-The deployed instance has no authorization implemented yet but one can login and register
+For authorization, on successful login you are given a token. Use the token as a beares token for all requests except `login` and `signup`
 
 If you wish to run a local instance please
 
