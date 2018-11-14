@@ -17,7 +17,13 @@ It has the following features:
 - `GET` -- Fetch all parcel delivery orders by a specific user  - `api/v1/users/<user_id>/parcels`
 - `PUT` -- Cancel a specific parcel delivery order - `api/v1/parcels/<parcel_id>/cancel`
 
-Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkybV) on how to consume the API. Register then login to get a token or use the example login in the documentatin.
+You can get a running instance of the API on **Heroku**. 
+Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkype).
+The deployed instance has no authorization implemented yet but one can login and register
+
+If you wish to run a local instance please
+
+Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkybV) on how to consume the API on a local machine. Register then login to get a token or use the example login in the documentatin.
 
 All routes other than `api/v1/login` and `api/v1/register` need authorization
 
