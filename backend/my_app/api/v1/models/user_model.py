@@ -7,13 +7,7 @@ class User():
     It has a add_user method that stores a created user object to a list
     and a get_user method that gets  one specific user
     """
-    users = [{
-        "user_id": 1,
-        "name": "Test",
-        "email": "test@email.com",
-        "password": "password",
-        "role": "user"
-    }]
+    users = []
 
     def add_user(self, data):
         """

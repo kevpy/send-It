@@ -6,6 +6,8 @@ from flask import request, make_response, jsonify
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
 from ..models.parcel import ParcelModel
+from ..schemas import ParceCreateSchema
+from ..validators import validate_json
 
 
 class Parcels(Resource):
@@ -18,23 +20,21 @@ class Parcels(Resource):
         """Saves a new parcel item
         :return: Returns a json response
         """
+        schema = ParceCreateSchema()
         data = request.get_json() or {}
+        print(data)
+        is_valid = validate_json(schema, data)
 
-        if not data or data == {}:
+        if is_valid is not None:
             return make_response(jsonify(
                 {
-                    "Message": "Post data not provided",
+                    "Message": is_valid,
                     "status": "Bad Request"
                 }
             ), 400)
 
         parcel = ParcelModel()
-        my_parcel = parcel.add_parcel(
-            sender_id=data['sender_id'],
-            pickup_location=data['pickup_location'],
-            destination=data['destination'],
-            weight=data['weight'],
-            status=data['status'])
+        my_parcel = parcel.add_parcel(data)
 
         payload = {
             'status': 'Created',
@@ -88,9 +88,9 @@ class SpecificParcel(Resource):
             ), 200)
         return make_response(
             jsonify({
-                    "Parcel": "No parcel found",
-                    "status": "Not Found"
-                    }), 404)
+                "Parcel": "No parcel found",
+                "status": "Not Found"
+            }), 404)
 
 
 class CancelOrder(Resource):

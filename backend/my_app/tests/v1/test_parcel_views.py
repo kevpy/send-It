@@ -2,24 +2,7 @@
 This test class tests the parcel_views
 """
 from flask import json
-
-create_order = {
-    "sender_id": 1,
-    "pickup_location": "Nakuru",
-    "destination": "Eldoret",
-    "weight": "10KG",
-    "status": "pending delivery"
-}
-
-cancel_order = {
-    "sender_id": 1,
-    "pickup_location": "Nakuru",
-    "destination": "Eldoret",
-    "weight": "10KG",
-    "status": "canceled"
-}
-
-empty_data = {}
+from .data import create_order, cancel_order, empty_data
 
 
 class TestParcelViews(object):
@@ -53,7 +36,7 @@ class TestParcelViews(object):
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
         assert 'Bad Request' in res_data['status']
-        assert 'Post data not provided' in str(res_data['Message'])
+        assert 'Missing data for required field.' in str(res_data['Message'])
 
     def test_no_data(self, client, auth_token):
         """ Tests for case where empty json data is posted"""
@@ -110,7 +93,8 @@ class TestParcelViews(object):
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
         assert 'Bad request' in res_data['status']
-        assert 'Please provide a valid parcel id(int)' in str(res_data['Message'])
+        assert 'Please provide a valid parcel id(int)' in str(
+            res_data['Message'])
 
     def test_cancel_an_order_if_order_exist(self, client, auth_token):
         """Test canceling an order if order exists"""
@@ -144,7 +128,7 @@ class TestParcelViews(object):
         """Test a specific users all orders are found"""
 
         response = client.get(
-            "/api/v1/users/2/parcels",
+            "/api/v1/users/1/parcels",
             headers=dict(Authorization="Bearer " + auth_token),)
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 200
@@ -171,4 +155,5 @@ class TestParcelViews(object):
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
         assert 'Bad request' in res_data['status']
-        assert 'Please provide a valid parcel id(int)' in str(res_data['Message'])
+        assert 'Please provide a valid parcel id(int)' in str(
+            res_data['Message'])

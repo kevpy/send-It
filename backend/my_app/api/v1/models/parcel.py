@@ -1,54 +1,26 @@
 """This is the parcel model."""
 import uuid
-from flask import jsonify, make_response
 
 
 class ParcelModel:
     """This class creates, gets, updates a parcel oerder"""
-    parcels = [
-        {
-            "parcel_id": 1,
-            "sender_id": 1,
-            "pickup_location": "Nakuru",
-            "destination": "Nairobi",
-            "weight": "10KG",
-            "status": "pending delivery"
-        },
-        {
-            "parcel_id": 2,
-            "sender_id": 2,
-            "pickup_location": "Nakuru",
-            "destination": "Eldoret",
-            "weight": "5KG",
-            "status": "pending delivery"
-        },
-        {
-            "parcel_id": 3,
-            "sender_id": 2,
-            "pickup_location": "Nairobi",
-            "destination": "Mombasa",
-            "weight": "1KG",
-            "status": "pending delivery"
-        }
-    ]
+    parcels = []
 
-    def add_parcel(self,
-                   sender_id,
-                   pickup_location,
-                   destination,
-                   weight,
-                   status='penging_delivery'):
+    def add_parcel(self, data):
         """
         This method creates a new parcel delivery order
 
-        :param sender_id:
-        :param pickup_location:
-        :param destination:
-        :param weight:
-        :param status:
+        :param data::
         :return: returns a dictionary object of a newly created parcel
                 order
         """
+        sender_id = data['sender_id']
+        pickup_location = data['pickup_location']
+        destination = data['destination']
+        weight = data['weight']
+        status = data['status']
+        price = data['price']
+
         parcel_id = uuid.uuid4().int >> 64
 
         parcel = {
@@ -57,7 +29,8 @@ class ParcelModel:
             'pickup_location': pickup_location,
             'destination': destination,
             'weight': weight,
-            'status': status
+            'status': status,
+            'price': price
         }
 
         ParcelModel.parcels.append(parcel)

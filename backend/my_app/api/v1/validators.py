@@ -1,19 +1,16 @@
 """This modules provides validators for models"""
-from marshmallow import Schema, fields, ValidationError
+from marshmallow import ValidationError
 
 
-class UserPostSchema(Schema):
-    """ This class creates a schema to validate user json post data"""
-    name = fields.String(required=True)
-    email = fields.Email(required=True)
-    password = fields.String(required=True)
-    role = fields.String(required=True)
-
-
-class UserLoginSchema(Schema):
-    """ This class creates a schema to validate user json post data"""
-    email = fields.Email(required=True)
-    password = fields.String(required=True)
+def is_empty(value):
+    """
+    Takes in a parameter value and strips if of space characters.
+    If the value is an empty string it raises a ValidationError
+    :param value:
+    :raises: Raises ValidationError
+    """
+    if value.strip() == '':
+        raise ValidationError('Value provided cannot be empty')
 
 
 def validate_json(my_schema, json=None):

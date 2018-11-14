@@ -2,55 +2,9 @@
 This test class avails tests for user views
 """
 from flask import json
-
-valid_user = {
-    "name": "Test2",
-    "email": "user@email.com",
-    "password": "password",
-    "role": "user"
-}
-
-invalid_user = {
-    "name": "Test",
-    "email": "email.com",
-    "password": "password",
-    "role": "user"
-}
-
-existing_user = {
-    "name": "Test",
-    "email": "test@email.com",
-    "password": "password",
-    "role": "user"
-}
-
-some_missing = {
-    "name": "Test",
-    "password": "password",
-    "role": "user"
-}
-
-empty_data = {}
-
-valid_email_login = {
-    "email": "test@email.com",
-    "password": "password"
-}
-
-invalid_email_login = {
-    "email": "testemail.com",
-    "password": "password"
-}
-
-wrong_login_password = {
-    "email": "test@email.com",
-    "password": "wrong"
-}
-
-user_doesnt_exist_login = {
-    "email": "new@email.com",
-    "password": "password"
-}
+from .data import (valid_user, existing_user, invalid_user,
+                   some_missing, invalid_email_login, empty_data,
+                   wrong_login_password, user_doesnt_exist_login)
 
 
 class Testuser(object):
@@ -69,6 +23,18 @@ class Testuser(object):
         res_data = json.loads(response.get_data(as_text=True))
         assert 'Created' in res_data['status']
         assert 'user@email.com' in str(res_data['data'])
+
+    def test_invalid_registration(self, client):
+        """ This method tests for a valid registration"""
+
+        response = client.post(
+            "/api/v1/register",
+            data=json.dumps(invalid_user),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert 'Bad Request' in res_data['status']
+        assert 'Not a valid email address' in str(res_data['Message'])
 
     def test_user_exists(self, client):
         """ This method tests for a valid registration"""
@@ -99,7 +65,7 @@ class Testuser(object):
 
         response = client.post(
             "/api/v1/register",
-            data=json.dumps(empty_data),
+            data=json.dumps(some_missing),
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))

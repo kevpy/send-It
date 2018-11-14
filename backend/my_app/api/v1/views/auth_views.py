@@ -6,10 +6,11 @@ from flask import jsonify, make_response, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token
 from ..models.user_model import User
-from ..validators import UserPostSchema, UserLoginSchema, validate_json
+from ..validators import validate_json
+from ..schemas import UserLoginSchema, UserPostSchema
 
 
-class Register(Resource, User):
+class Register(Resource):
     """ This class creates a view for registering a new user"""
 
     def post(self):
@@ -17,6 +18,7 @@ class Register(Resource, User):
         Saves a new user
         :return: Returns a json response.
         """
+        user = User()
         schema = UserPostSchema()
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
@@ -26,21 +28,21 @@ class Register(Resource, User):
                 "Message": is_valid,
                 "status": "Bad Request"
             }), 400)
-        user_exist = self.get_user(data['email'])
+        user_exist = user.get_user(data['email'])
         if user_exist is not None:
             return make_response(jsonify({
                 "message": "User already exists"
             }), 409)
         else:
-            user = self.add_user(data)
+            new_user = user.add_user(data)
             return make_response(jsonify({
                 "message": "User saved",
                 "status": "Created",
-                "data": user
+                "data": new_user
             }), 201)
 
 
-class Login(Resource, User):
+class Login(Resource):
     """This class creates a view for login/authentication"""
 
     def post(self):
@@ -48,6 +50,7 @@ class Login(Resource, User):
         Authenticates a user with an email and password
         :return: Returns a json response
         """
+        user = User()
         schema = UserLoginSchema()
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
@@ -57,7 +60,7 @@ class Login(Resource, User):
                 "Message": is_valid,
                 "status": "Bad Request"
             }), 400)
-        user = self.get_user(data['email'])
+        user = user.get_user(data['email'])
         if not user:
             return make_response(jsonify({
                 "message": "User doesn't exists"
