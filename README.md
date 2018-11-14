@@ -61,3 +61,18 @@ Run flask
 -`flask run`
 
 You should now have a running flask instance.
+
+## Running Tests
+
+If you wish to run tests on this repository follow these instructions.
+
+On your virtual environment install these two other python libraries with the following commands.
+ - `pip install pytest`
+ - `pip install pytest-cov`
+
+ To run the tests, navigate to the root directory of `send-It/`.
+ On your terminal run `py.test` or `pytest`. You should be able to see the tests results.
+
+ To see tests with test coverage run `pytest --cov=backend/`. This command specifies to `pytest` which directory to run tests and coverage against.
+
+ You can alternatively click on the top badges and check agaisnt the specified tests.
