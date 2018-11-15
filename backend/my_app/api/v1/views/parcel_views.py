@@ -7,7 +7,7 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.parcel import ParcelModel
 from ..models.user_model import User
-from ..schemas import ParceCreateSchema
+from ..schemas import ParceCreateSchema, ParceCancelSchema
 from ..validators import validate_json
 
 
@@ -31,12 +31,10 @@ class Parcels(Resource):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify(
-                {
-                    "Message": is_valid,
-                    "status": "Bad Request"
-                }
-            ), 400)
+            return make_response(jsonify({
+                "Message": is_valid,
+                "status": "Bad Request"
+            }), 400)
 
         parcel = ParcelModel()
         my_parcel = parcel.add_parcel(data, user_id)
@@ -108,25 +106,29 @@ class CancelOrder(Resource):
         :param parcel_id:
         :return: Returns a json response
         """
-
+        schema = ParceCancelSchema()
         parcel = ParcelModel()
         data = request.get_json() or {}
+
+        check_valid = validate_json(schema, data)
+
+        if check_valid is not None:
+            return make_response(jsonify({
+                "Message": check_valid,
+                "status": "Bad Request"
+            }), 400)
         change = parcel.cancel_order(parcel_id, data)
 
         if change is not None:
-            return make_response(jsonify(
-                {
-                    "Message": "success",
-                    "status": "Accepted",
-                    "data": change
-                }
-            ), 202)
-        return make_response(jsonify(
-            {
-                "Message": "The order requested does not exist",
-                "status": "Not Found"
-            }
-        ), 404)
+            return make_response(jsonify({
+                "Message": "success",
+                "status": "Accepted",
+                "data": change
+            }), 202)
+        return make_response(jsonify({
+            "Message": "The order requested does not exist",
+            "status": "Not Found"
+        }), 404)
 
 
 class UserOrders(Resource):

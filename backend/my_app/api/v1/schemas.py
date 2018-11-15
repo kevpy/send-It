@@ -29,3 +29,10 @@ class ParceCreateSchema(Schema):
     destination = fields.String(required=True, validate=is_empty)
     weight = fields.String(required=True, validate=is_empty)
     price = fields.String(required=True, validate=is_empty)
+
+
+class ParceCancelSchema(Schema):
+    """
+    This class creates a validation schema for canceling a new parcel order.
+    """
+    parcel_id = fields.Integer(required=True)

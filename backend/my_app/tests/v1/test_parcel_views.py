@@ -2,8 +2,7 @@
 This test class tests the parcel_views
 """
 from flask import json
-from .data import (create_order, cancel_order,
-                   empty_data, empty_string)
+from .data import (create_order, cancel_order, empty_data, empty_string)
 
 
 class TestParcelViews(object):
@@ -111,6 +110,18 @@ class TestParcelViews(object):
         assert 'Please provide a valid parcel id(int)' in str(
             res_data['Message'])
 
+    def test_found_users_all_orders(self, client, auth_token):
+        """Test a specific users all orders are found"""
+
+        response = client.get(
+            "/api/v1/users/1/parcels",
+            headers=dict(Authorization="Bearer " + auth_token),
+        )
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 200
+        assert 'OK' in res_data['status']
+        assert 'pending delivery' in str(res_data['Parcels'])
+
     def test_cancel_an_order_if_order_exist(self, client, auth_token):
         """Test canceling an order if order exists"""
 
@@ -139,23 +150,12 @@ class TestParcelViews(object):
         assert 'Not Found' in res_data['status']
         assert 'The order requested does not exist' in str(res_data['Message'])
 
-    def test_found_users_all_orders(self, client, auth_token):
-        """Test a specific users all orders are found"""
-
-        response = client.get(
-            "/api/v1/users/1/parcels",
-            headers=dict(Authorization="Bearer " + auth_token),)
-        res_data = json.loads(response.get_data(as_text=True))
-        assert response.status_code == 200
-        assert 'OK' in res_data['status']
-        assert 'pending delivery' in str(res_data['Parcels'])
-
     def test_not_found_order_for_user(self, client, auth_token):
         """Test a specific user's orders none are found"""
 
         response = client.get(
             "/api/v1/users/10/parcels",
-            headers=dict(Authorization="Bearer " + auth_token),)
+            headers=dict(Authorization="Bearer " + auth_token))
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 404
         assert 'Not Found' in res_data['status']
@@ -166,7 +166,7 @@ class TestParcelViews(object):
 
         response = client.get(
             "/api/v1/users/a/parcels",
-            headers=dict(Authorization="Bearer " + auth_token),)
+            headers=dict(Authorization="Bearer " + auth_token))
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
         assert 'Bad request' in res_data['status']
