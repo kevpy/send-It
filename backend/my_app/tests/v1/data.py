@@ -36,6 +36,15 @@ cancel_order = {
     "status": "canceled"
 }
 
+empty_string = {
+    "sender_id": 1,
+    "pickup_location": "",
+    "destination": "Eldoret",
+    "weight": "10KG",
+    "status": "",
+    "price": "KES500"
+}
+
 empty_data = {}
 
 # Data for auth_views

@@ -2,7 +2,8 @@
 This test class tests the parcel_views
 """
 from flask import json
-from .data import create_order, cancel_order, empty_data
+from .data import (create_order, cancel_order,
+                   empty_data, empty_string)
 
 
 class TestParcelViews(object):
@@ -37,6 +38,20 @@ class TestParcelViews(object):
         assert response.status_code == 400
         assert 'Bad Request' in res_data['status']
         assert 'Missing data for required field.' in str(res_data['Message'])
+
+    def test_empty_string(self, client, auth_token):
+        """ Tests for case where empty json data is posted"""
+
+        response = client.post(
+            "/api/v1/parcels",
+            data=json.dumps(empty_string),
+            headers=dict(Authorization="Bearer " + auth_token),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 400
+        assert 'Bad Request' in res_data['status']
+        assert 'Value provided cannot be empty' in str(res_data['Message'])
 
     def test_no_data(self, client, auth_token):
         """ Tests for case where empty json data is posted"""

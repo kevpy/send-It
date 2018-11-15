@@ -22,7 +22,6 @@ class Parcels(Resource):
         """
         schema = ParceCreateSchema()
         data = request.get_json() or {}
-        print(data)
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:

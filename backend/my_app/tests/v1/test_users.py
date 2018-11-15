@@ -12,6 +12,16 @@ class Testuser(object):
     These are the registration and login routes
     """
 
+    def test_random_urls(self, client):
+        """Test a specific users all orders are found"""
+
+        response = client.get(
+            "/api/v1/register/random")
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 404
+        assert 'The requested resource does not exist' in str(res_data[
+                                                              'Message'])
+
     def test_valid_registration(self, client):
         """ This method tests for a valid registration"""
 
