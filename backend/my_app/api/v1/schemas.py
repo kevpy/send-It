@@ -4,7 +4,8 @@ from .validators import is_empty
 
 
 class UserPostSchema(Schema):
-    """ This class creates a schema to validate user json post data"""
+    """This class creates a validation schema to validate user json post data.
+    """
     name = fields.String(required=True, validate=is_empty)
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=is_empty)
@@ -12,16 +13,19 @@ class UserPostSchema(Schema):
 
 
 class UserLoginSchema(Schema):
-    """ This class creates a schema to validate user json post data"""
+    """T
+    his class creates a validation schema to validate user json post data.
+    """
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=is_empty)
 
 
 class ParceCreateSchema(Schema):
-    """ This class creates a schema for creating a ne parcel order"""
-    sender_id = fields.Integer(required=True)
+    """
+    This class creates a validation schema for creating a new parcel order.
+    """
+    parcel_details = fields.String(required=True, validate=is_empty)
     pickup_location = fields.String(required=True, validate=is_empty)
     destination = fields.String(required=True, validate=is_empty)
     weight = fields.String(required=True, validate=is_empty)
-    status = fields.String(required=True, validate=is_empty)
     price = fields.String(required=True, validate=is_empty)

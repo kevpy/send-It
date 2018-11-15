@@ -4,8 +4,9 @@ Creates views for parcels. These are POST, GET, PUT
 
 from flask import request, make_response, jsonify
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.parcel import ParcelModel
+from ..models.user_model import User
 from ..schemas import ParceCreateSchema
 from ..validators import validate_json
 
@@ -20,6 +21,11 @@ class Parcels(Resource):
         """Saves a new parcel item
         :return: Returns a json response
         """
+        user = User()
+        user_email = get_jwt_identity()
+        get_user = user.get_user(user_email)
+        user_id = get_user['user_id']
+
         schema = ParceCreateSchema()
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
@@ -33,7 +39,7 @@ class Parcels(Resource):
             ), 400)
 
         parcel = ParcelModel()
-        my_parcel = parcel.add_parcel(data)
+        my_parcel = parcel.add_parcel(data, user_id)
 
         payload = {
             'status': 'Created',
