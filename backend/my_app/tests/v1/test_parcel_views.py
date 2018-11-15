@@ -2,7 +2,8 @@
 This test class tests the parcel_views
 """
 from flask import json
-from .data import (create_order, cancel_order, empty_data, empty_string)
+from .data import (create_order, cancel_order, empty_data,
+                   empty_string, cancel_order_invalid)
 
 
 class TestParcelViews(object):
@@ -135,6 +136,20 @@ class TestParcelViews(object):
         assert response.status_code == 202
         assert 'Accepted' in res_data['status']
         assert 'canceled' in str(res_data['data'])
+
+    def test_invalid_data_on_cancel(self, client, auth_token):
+        """Test canceling an order if order exists"""
+
+        response = client.put(
+            "api/v1/parcels/1/cancel",
+            data=json.dumps(cancel_order_invalid),
+            headers=dict(Authorization="Bearer " + auth_token),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 400
+        assert 'Bad Request' in res_data['status']
+        assert 'Not a valid integer.' in str(res_data['Message'])
 
     def test_cancel_an_order_if_order_doesnt_exist(self, client, auth_token):
         """Test canceling an order if order doesn't exists"""

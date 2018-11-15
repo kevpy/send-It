@@ -32,6 +32,10 @@ cancel_order = {
     "parcel_id": 1
 }
 
+cancel_order_invalid = {
+    "parcel_id": ""
+}
+
 empty_string = {
     "parcel_details": "",
     "pickup_location": "",
