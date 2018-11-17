@@ -33,13 +33,12 @@ class Register(Resource):
             return make_response(jsonify({
                 "message": "User already exists"
             }), 409)
-        else:
-            new_user = user.add_user(data)
-            return make_response(jsonify({
-                "message": "User saved",
-                "status": "Created",
-                "data": new_user
-            }), 201)
+        new_user = user.add_user(data)
+        return make_response(jsonify({
+            "message": "User saved",
+            "status": "Created",
+            "data": new_user
+        }), 201)
 
 
 class Login(Resource):

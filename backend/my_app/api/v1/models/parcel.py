@@ -61,7 +61,7 @@ class ParcelModel:
         """
         parcel = self.get_specific_parcel(parcel_id)
 
-        if parcel is not None and parcel_id == data['parcel_id']:
+        if parcel is not None and parcel_id == int(data['parcel_id']):
             parcel['status'] = "canceled"
             return parcel
         return None

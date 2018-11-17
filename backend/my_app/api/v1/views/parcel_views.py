@@ -73,22 +73,17 @@ class SpecificParcel(Resource):
         try:
             parcel_id = int(parcel_id)
         except Exception:
-            return make_response(
-                jsonify(
-                    {
-                        "Message": "Please provide a valid parcel id(int)",
-                        "status": "Bad request"
-                    }
-                ), 400)
+            return make_response(jsonify({
+                "Message": "Please provide a valid parcel id(int)",
+                "status": "Bad request"
+            }), 400)
         parcel = ParcelModel()
 
         single_parcel = parcel.get_specific_parcel(parcel_id)
         if single_parcel is not None:
-            return make_response(jsonify(
-                {
-                    "parcel": single_parcel, "status": "OK"
-                }
-            ), 200)
+            return make_response(jsonify({
+                "parcel": single_parcel, "status": "OK"
+            }), 200)
         return make_response(
             jsonify({
                 "Parcel": "No parcel found",
