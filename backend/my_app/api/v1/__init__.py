@@ -15,4 +15,3 @@ api.add_resource(CancelOrder, "/parcels/<int:parcel_id>/cancel")
 api.add_resource(UserOrders, "/users/<user_id>/parcels")
 api.add_resource(Register, "/register")
 api.add_resource(Login, "/login")
-

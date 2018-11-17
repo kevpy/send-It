@@ -4,9 +4,10 @@ Creates views for parcels. These are POST, GET, PUT
 
 from flask import request, make_response, jsonify
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.parcel import ParcelModel
-from ..schemas import ParceCreateSchema
+from ..models.user_model import User
+from ..schemas import ParceCreateSchema, ParceCancelSchema
 from ..validators import validate_json
 
 
@@ -20,20 +21,23 @@ class Parcels(Resource):
         """Saves a new parcel item
         :return: Returns a json response
         """
+        user = User()
+        user_email = get_jwt_identity()
+        get_user = user.get_user(user_email)
+        user_id = get_user['user_id']
+
         schema = ParceCreateSchema()
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify(
-                {
-                    "Message": is_valid,
-                    "status": "Bad Request"
-                }
-            ), 400)
+            return make_response(jsonify({
+                "Message": is_valid,
+                "status": "Bad Request"
+            }), 400)
 
         parcel = ParcelModel()
-        my_parcel = parcel.add_parcel(data)
+        my_parcel = parcel.add_parcel(data, user_id)
 
         payload = {
             'status': 'Created',
@@ -69,22 +73,17 @@ class SpecificParcel(Resource):
         try:
             parcel_id = int(parcel_id)
         except Exception:
-            return make_response(
-                jsonify(
-                    {
-                        "Message": "Please provide a valid parcel id(int)",
-                        "status": "Bad request"
-                    }
-                ), 400)
+            return make_response(jsonify({
+                "Message": "Please provide a valid parcel id(int)",
+                "status": "Bad request"
+            }), 400)
         parcel = ParcelModel()
 
         single_parcel = parcel.get_specific_parcel(parcel_id)
         if single_parcel is not None:
-            return make_response(jsonify(
-                {
-                    "parcel": single_parcel, "status": "OK"
-                }
-            ), 200)
+            return make_response(jsonify({
+                "parcel": single_parcel, "status": "OK"
+            }), 200)
         return make_response(
             jsonify({
                 "Parcel": "No parcel found",
@@ -102,25 +101,29 @@ class CancelOrder(Resource):
         :param parcel_id:
         :return: Returns a json response
         """
-
+        schema = ParceCancelSchema()
         parcel = ParcelModel()
         data = request.get_json() or {}
+
+        check_valid = validate_json(schema, data)
+
+        if check_valid is not None:
+            return make_response(jsonify({
+                "Message": check_valid,
+                "status": "Bad Request"
+            }), 400)
         change = parcel.cancel_order(parcel_id, data)
 
         if change is not None:
-            return make_response(jsonify(
-                {
-                    "Message": "success",
-                    "status": "Accepted",
-                    "data": change
-                }
-            ), 202)
-        return make_response(jsonify(
-            {
-                "Message": "The order requested does not exist",
-                "status": "Not Found"
-            }
-        ), 404)
+            return make_response(jsonify({
+                "Message": "success",
+                "status": "Accepted",
+                "data": change
+            }), 202)
+        return make_response(jsonify({
+            "Message": "The order requested does not exist",
+            "status": "Not Found"
+        }), 404)
 
 
 class UserOrders(Resource):

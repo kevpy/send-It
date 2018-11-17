@@ -4,6 +4,7 @@
 create_test_order = {
     "sender_id": 1,
     "parcel_id": 1,
+    "parcel_details": "Spare parts",
     "pickup_location": "Nakuru",
     "destination": "Eldoret",
     "weight": "10KG",
@@ -20,24 +21,23 @@ create_test_user = {
 
 # Data for parcel views
 create_order = {
-    "sender_id": 1,
+    "parcel_details": "Spare parts",
     "pickup_location": "Nakuru",
     "destination": "Eldoret",
     "weight": "10KG",
-    "status": "pending delivery",
     "price": "KES500"
 }
 
 cancel_order = {
-    "sender_id": 1,
-    "pickup_location": "Nakuru",
-    "destination": "Eldoret",
-    "weight": "10KG",
-    "status": "canceled"
+    "parcel_id": 1
+}
+
+cancel_order_invalid = {
+    "parcel_id": ""
 }
 
 empty_string = {
-    "sender_id": 1,
+    "parcel_details": "",
     "pickup_location": "",
     "destination": "Eldoret",
     "weight": "10KG",

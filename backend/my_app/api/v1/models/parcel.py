@@ -6,7 +6,7 @@ class ParcelModel:
     """This class creates, gets, updates a parcel oerder"""
     parcels = []
 
-    def add_parcel(self, data):
+    def add_parcel(self, data, user_id):
         """
         This method creates a new parcel delivery order
 
@@ -14,11 +14,11 @@ class ParcelModel:
         :return: returns a dictionary object of a newly created parcel
                 order
         """
-        sender_id = data['sender_id']
+        sender_id = user_id
+        parcel_details = data['parcel_details']
         pickup_location = data['pickup_location']
         destination = data['destination']
         weight = data['weight']
-        status = data['status']
         price = data['price']
 
         parcel_id = uuid.uuid4().int >> 64
@@ -26,10 +26,11 @@ class ParcelModel:
         parcel = {
             'parcel_id': parcel_id,
             'sender_id': sender_id,
+            'parcel_details': parcel_details,
             'pickup_location': pickup_location,
             'destination': destination,
             'weight': weight,
-            'status': status,
+            'status': "pending delivery",
             'price': price
         }
 
@@ -60,8 +61,8 @@ class ParcelModel:
         """
         parcel = self.get_specific_parcel(parcel_id)
 
-        if parcel is not None:
-            parcel['status'] = data['status']
+        if parcel is not None and parcel_id == int(data['parcel_id']):
+            parcel['status'] = "canceled"
             return parcel
         return None
 
