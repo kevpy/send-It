@@ -3,11 +3,25 @@ language: python
 python:
   - "3.6"
 
+service:
+  - postgresql
+
+before_install:
+  - export APP_SETTINGS="testing"
+  - export SECRET_KEY="justatest"
+
 install:
   - pip install -r requirements.txt
   - pip install pytest
   - pip install pytest-cov
   - pip install coveralls
+
+before_script:
+  - psql -c "CREATE DATABASE test_db;" -U postgres
+  - psql -c "ALTER USER postgres WITH PASSWORD '1234';" -U postgres
+
+env:
+  - TEST_DB_URI="dbname='test_db' user='postgres' host='localhost' password='1234'"
 
 script:
   - pytest --cov=backend/my_app/
