@@ -3,14 +3,16 @@ import os
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from .api.v1 import version1_bp
+from .db.db_config import create_tables
 
 
-def create_app():
+def create_app(config_name):
     """Creates an instance of a flask application
     :returns returns an instance of a flask app
     """
     app = Flask(__name__)
-    app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY') or "secret"
+    create_tables()
+    app.config["JWT_SECRET_KEY"] = os.environ.get('SECRET_KEY') or "secret"
     jwt = JWTManager(app)
     app.config['PROPAGATE_EXCEPTIONS'] = True
 

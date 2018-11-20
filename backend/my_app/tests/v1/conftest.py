@@ -12,7 +12,7 @@ from .data import create_test_order, create_test_user
 @pytest.fixture(scope='session')
 def client():
     """This function creates a test client"""
-    app = create_app()
+    app = create_app('testing')
     test_client = app.test_client()
 
     # create test user and order
@@ -30,10 +30,7 @@ def client():
 
 @pytest.fixture(scope='session')
 def auth_token(client):
-    login = {
-        "email": "test@email.com",
-        "password": "password"
-    }
+    login = {"email": "test@email.com", "password": "password"}
 
     res = client.post(
         "/api/v1/login",
