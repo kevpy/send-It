@@ -2,8 +2,9 @@
 
 USERS = """ CREATE TABLE IF NOT EXISTS users(
         user_id serial PRIMARY KEY,
+        name VARCHAR(48) NOT NULL,
         email VARCHAR(96) UNIQUE,
-        password VARCHAR(48) NOT NULL,
+        password VARCHAR(255) NOT NULL,
         user_role VARCHAR(48) NOT NULL DEFAULT 'user'
         );
         """

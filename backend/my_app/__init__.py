@@ -3,6 +3,7 @@ import os
 from flask import Flask, jsonify
 from flask_jwt_extended import JWTManager
 from .api.v1 import version1_bp
+from .api.v2 import version2_bp_auth
 from .db.db_config import create_tables
 
 
@@ -17,6 +18,7 @@ def create_app(config_name):
     app.config['PROPAGATE_EXCEPTIONS'] = True
 
     app.register_blueprint(version1_bp, url_prefix='/api/v1')
+    app.register_blueprint(version2_bp_auth, url_prefix='/api/v2')
 
     @app.errorhandler(404)
     def url_doesnt_exist(error):
