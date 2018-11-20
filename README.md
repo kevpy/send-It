@@ -9,13 +9,16 @@ It provides courier quotes based on weight categories
 In `backend/` directory you will find a flask app.
 It has the following features:
 
-- `POST` -- Login as a user - `api/v1/login`
-- `POST` -- Create/register a user - `api/v1/register`
-- `POST` -- Create a parcel delivery order - `api/v1/parcels`
-- `GET` -- Fetch all parcel delivery orders  - `api/v1/parcels`
-- `GET` -- Fetch a specific parcel delivery order  - `api/v1/parcels/<parcel_id>`
-- `GET` -- Fetch all parcel delivery orders by a specific user  - `api/v1/users/<user_id>/parcels`
-- `PUT` -- Cancel a specific parcel delivery order - `api/v1/parcels/<parcel_id>/cancel`
+- `POST` -- Login as a user - `api/v2/auth/login`
+- `POST` -- Create/register a user - `api/v2/auth/signup`
+- `POST` -- Create a parcel delivery order - `api/v2/parcels`
+- `GET` -- Fetch all parcel delivery orders  - `api/v2/parcels`
+- `GET` -- Fetch a specific parcel delivery order  - `api/v2/parcels/<parcel_id>`
+- `GET` -- Fetch all parcel delivery orders by a specific user  - `api/v2/users/<user_id>/parcels`
+- `PUT` -- Cancel a specific parcel delivery order - `api/v2/parcels/<parcel_id>/cancel`
+- `PUT` -- Change the destination of a parcel delivery order - `api/v2/parcels/<parcel_id>/destination`
+- `PUT` -- Change the status of a parcel delivery order - `api/v2/parcels/<parcel_id>/status`
+- `PUT` -- Change the present location of a parcel delivery order - `api/v2/parcels/<parcel_id>/presentLocation`
 
 You can get a running instance of the API on **Heroku**. 
 Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkype).
@@ -25,7 +28,7 @@ If you wish to run a local instance please
 
 Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkybV) on how to consume the API on a local machine. Register then login to get a token or use the example login in the documentatin.
 
-All routes other than `api/v1/login` and `api/v1/register` need authorization
+All routes other than `api/v2/auth/login` and `api/v2/auth/register` need authorization
 
 But first lets setup a working app
 
@@ -35,7 +38,7 @@ Clone this git repository
 -` git clone https://github.com/kevpy/send-It.git`
 
 Checkout the latest working branch
--`git checkout ft-user-login-apiv1-161773626`
+-`git checkout challenge3`
 
 If you are not on the specified branch run `git fetch --all` and re-run the above command
 
