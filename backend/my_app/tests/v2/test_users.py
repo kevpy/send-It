@@ -55,7 +55,7 @@ class Testuser(object):
 
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 409
-        assert 'User already exists' in res_data['Message']
+        assert 'User with given email address exist' in res_data['Message']
 
     def test_empty_post_data(self, client):
         """ This method tests for a valid registration"""
