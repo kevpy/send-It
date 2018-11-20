@@ -25,19 +25,16 @@ class Register(Resource):
 
         if is_valid is not None:
             return make_response(jsonify({
-                "Message": is_valid,
-                "status": "Bad Request"
+                "Message": is_valid
             }), 400)
         user_exist = user.get_user(data['email'])
-        print(user_exist)
         if user_exist is not None:
             return make_response(jsonify({
-                "message": "User already exists"
+                "Message": "User already exists"
             }), 409)
         new_user = user.add_user(data)
         return make_response(jsonify({
-            "message": "User saved",
-            "status": "Created",
+            "Message": "User saved successfully",
             "data": new_user
         }), 201)
 
@@ -58,21 +55,21 @@ class Login(Resource):
         if is_valid is not None:
             return make_response(jsonify({
                 "Message": is_valid,
-                "status": "Bad Request"
             }), 400)
         check_user = user.get_user(data['email'])
         if not check_user:
             return make_response(jsonify({
-                "message": "User doesn't exists"
+                "Message": "User doesn't exists"
             }), 404)
-        check_pass = user.verify_password(data['password'], check_user['password'])
+        check_pass = user.verify_password(
+            data['password'], check_user['password'])
         if not check_pass:
             return make_response(jsonify({
-                "message": "Incorrect Password",
+                "Message": "Incorrect Password",
             }), 400)
 
         access_token = create_access_token(identity=check_user['email'])
         return make_response(jsonify({
-            "message": "Successful login",
+            "Message": "Successful login",
             "token": access_token
         }), 200)
