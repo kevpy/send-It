@@ -1,5 +1,6 @@
 """This module creates a user model."""
-from werkzeug.security import generate_password_hash
+from psycopg2.extras import RealDictCursor
+from werkzeug.security import generate_password_hash, check_password_hash
 from ....db.db_config import init_db
 
 
@@ -35,12 +36,16 @@ class User():
         cursor = self.db.cursor()
         cursor.execute(query, user)
         self.db.commit()
-        return user
+        del data['password']
+        return data
 
     def get_user(self, email):
-        cursor = self.db.cursor()
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
         cursor.execute(
             """SELECT * FROM users
                WHERE email='{}'""".format(email))
         data = cursor.fetchone()
         return data
+
+    def verify_password(self, password, password_hash):
+        return check_password_hash(password_hash, password)

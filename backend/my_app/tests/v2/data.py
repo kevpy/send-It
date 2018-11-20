@@ -37,3 +37,26 @@ EMPTY_STRINGS = {
 }
 
 EMPTY_DATA = {}
+
+# Login view test data
+INVALID_EMAIL_LOGIN = {
+    "email": "testemail.com",
+    "password": "password"
+}
+
+WRONG_LOGIN_PASSWORD = {
+    "email": "user@email.com",
+    "password": "wrong"
+}
+
+USER_NOT_EXIST_LOGIN = {
+    "email": "new@email.com",
+    "password": "password"
+}
+
+CREATE_TEST_USER = {
+    "name": "Test",
+    "email": "test@email.com",
+    "password": "password",
+    "role": "user"
+}
