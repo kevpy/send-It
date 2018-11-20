@@ -5,7 +5,6 @@ import psycopg2
 from instance.config import app_config
 from .tables import USERS, PARCELS, TABLES_TO_DROP
 
-# url = os.getenv('TEST_DB_URI')
 env = os.getenv('APP_SETTINGS')
 url = app_config[env].DATABASE_URL
 
