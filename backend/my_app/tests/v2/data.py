@@ -5,22 +5,20 @@
 VALID_USER = {
     "name": "Test2",
     "email": "user@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "PassW0rd"
 }
 
 INVALID_USER = {
     "name": "Test",
     "email": "email.com",
-    "password": "password",
+    "password": "PassW0rd",
     "role": "user"
 }
 
 EXISTING_USER = {
     "name": "Test",
     "email": "user@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "PassW0rd"
 }
 
 SOME_MISSING = {
@@ -57,6 +55,39 @@ USER_NOT_EXIST_LOGIN = {
 CREATE_TEST_USER = {
     "name": "Test",
     "email": "test@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "Passw0rd"
+}
+
+CREATE_TEST_ADMIN = {
+    "name": "Admin",
+    "email": "admin@email.com",
+    "password": "Passw0rd",
+    "role": "admin"
+}
+
+# Data for parcels
+CREATE_PARCEL = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": "Mombasa",
+    "destination": "Nairobi",
+    "price": 2,
+    "weight": 5
+}
+
+EMPTY_STRING_PARCEL = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": "",
+    "destination": "Nairobi",
+    "price": 2,
+    "weight": 5
+}
+
+MISSING_OPTIONS = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": " ",
+    "price": 2,
+    "weight": 5
 }

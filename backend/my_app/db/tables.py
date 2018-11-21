@@ -12,12 +12,13 @@ USERS = """ CREATE TABLE IF NOT EXISTS users(
 PARCELS = """ CREATE TABLE IF NOT EXISTS parcels(
     parcel_id serial PRIMARY KEY,
     user_id serial NOT NULL,
+    parcel_details VARCHAR(250) NOT NULL,
     recipient VARCHAR(250) NOT NULL,
     status VARCHAR(48) NOT NULL DEFAULT 'pending delivery',
     weight INT NOT NULL,
     origin VARCHAR NOT NULL,
     destination VARCHAR(250) NOT NULL,
-    current_location VARCHAR(250) NOT NULL,
+    current_location VARCHAR(250) NOT NULL DEFAULT '',
     price INT NOT NULL,
     FOREIGN KEY (user_id)
             REFERENCES users (user_id)
