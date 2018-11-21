@@ -60,3 +60,30 @@ CREATE_TEST_USER = {
     "password": "password",
     "role": "user"
 }
+
+# Data for parcels
+CREATE_PARCEL = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": "Mombasa",
+    "destination": "Nairobi",
+    "price": 2,
+    "weight": 5
+}
+
+EMPTY_STRING_PARCEL = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": "",
+    "destination": "Nairobi",
+    "price": 2,
+    "weight": 5
+}
+
+MISSING_OPTIONS = {
+    "recipient": "Kezzy",
+    "parcel_details": "Spare parts",
+    "pickup_location": " ",
+    "price": 2,
+    "weight": 5
+}
