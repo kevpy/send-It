@@ -7,7 +7,7 @@ from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..models.parcel import ParcelModel
 from ..models.user import User
-from ..utils.schemas import ParceCreateSchema
+from ..utils.schemas import ParceCreateSchema, LocationSchema
 from ..utils.validators import validate_json
 
 
@@ -68,7 +68,6 @@ class ChangeStatus(Resource):
     def put(self, parcel_id):
         """This function allows admin to change status of all parcels"""
         parcel = ParcelModel()
-        print(parcel_id)
 
         user = User()
         user_email = get_jwt_identity()
@@ -84,4 +83,43 @@ class ChangeStatus(Resource):
         return make_response(
             jsonify({
                 "Message": "Successfully updated status"
+            }), 202)
+
+
+class ChangePresentLocation(Resource):
+    """
+    This class changes the present location of a parcel order from
+    from an empty value to given value
+    """
+
+    @jwt_required
+    def put(self, parcel_id):
+        """This function allows admin to change status of all parcels"""
+        parcel = ParcelModel()
+
+        schema = LocationSchema()
+        data = request.get_json() or {}
+        is_valid = validate_json(schema, data)
+
+        if is_valid is not None:
+            return make_response(jsonify({"Message": is_valid}), 400)
+
+        user = User()
+        user_email = get_jwt_identity()
+        check_role = user.check_admin(user_email)
+
+        if not check_role:
+            return make_response(
+                jsonify({
+                    "Message":
+                    "You are not authorised to access this resource"
+                }), 403)
+        if parcel.get_one_parcel(parcel_id) is None:
+            return make_response(jsonify({
+                "Message": "Parcel does not exist"
+            }), 404)
+        parcel.change_present_location(data['location'], parcel_id)
+        return make_response(
+            jsonify({
+                "Message": "Successfully updated present location"
             }), 202)
