@@ -77,3 +77,22 @@ class TestParcelViews(object):
         assert response.status_code == 403
         assert 'You are not authorised to access this resource' in str(
             res_data['Message'])
+
+    def test_admin_change_status(self, client, admin_token):
+        response = client.put(
+            "/api/v2/parcels/1/status",
+            headers=dict(Authorization="Bearer " + admin_token))
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 202
+        assert 'Successfully updated status' in str(res_data['Message'])
+
+    def test_non_admin_change_status(self, client, auth_token):
+        response = client.put(
+            "/api/v2/parcels/1/status",
+            headers=dict(Authorization="Bearer " + auth_token))
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 403
+        assert 'You are not authorised to access this resource' in str(
+            res_data['Message'])
