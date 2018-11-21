@@ -22,7 +22,7 @@ class User():
         name = data['name']
         email = data['email']
         password = generate_password_hash(data['password'])
-        role = data['role']
+        role = 'user' or data['role']
 
         user = {
             "name": name,
