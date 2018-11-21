@@ -8,7 +8,7 @@ class UserPostSchema(Schema):
     name = fields.String(required=True, validate=is_empty)
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=is_empty)
-    role = fields.String(required=True, validate=is_empty)
+    role = fields.String(validate=is_empty)
 
 
 class UserLoginSchema(Schema):
@@ -17,3 +17,15 @@ class UserLoginSchema(Schema):
     """
     email = fields.Email(required=True)
     password = fields.String(required=True, validate=is_empty)
+
+
+class ParceCreateSchema(Schema):
+    """
+    This class creates a validation schema for creating a new parcel order.
+    """
+    recipient = fields.String(required=True, validate=is_empty)
+    parcel_details = fields.String(required=True, validate=is_empty)
+    pickup_location = fields.String(required=True, validate=is_empty)
+    destination = fields.String(required=True, validate=is_empty)
+    weight = fields.Integer(required=True)
+    price = fields.Integer(required=True)
