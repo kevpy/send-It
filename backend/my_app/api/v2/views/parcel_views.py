@@ -25,7 +25,6 @@ class Parcels(Resource):
         user_email = get_jwt_identity()
         get_user = user.get_user(user_email)
         user_id = get_user['user_id']
-        print(user_id)
 
         schema = ParceCreateSchema()
         data = request.get_json() or {}
@@ -45,3 +44,20 @@ class Parcels(Resource):
         }
         res = make_response(jsonify(payload), 201)
         return res
+
+    @jwt_required
+    def get(self):
+        parcel = ParcelModel()
+
+        user = User()
+        user_email = get_jwt_identity()
+        check_role = user.check_admin(user_email)
+
+        if not check_role:
+            return make_response(jsonify({
+                "Message": "You are not authorised to access this resource"
+            }), 403)
+        parcels = parcel.get_all()
+        return make_response(jsonify({
+            "Data": parcels
+        }), 200)

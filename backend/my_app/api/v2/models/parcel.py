@@ -48,3 +48,12 @@ class ParcelModel:
         self.db.commit()
 
         return parcel
+
+    def get_all(self):
+        """ This method gets all parcels in the application"""
+        query = """ SELECT * FROM parcels """
+
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(query)
+        parcels = cursor.fetchall()
+        return parcels
