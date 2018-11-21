@@ -5,22 +5,20 @@
 VALID_USER = {
     "name": "Test2",
     "email": "user@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "PassW0rd"
 }
 
 INVALID_USER = {
     "name": "Test",
     "email": "email.com",
-    "password": "password",
+    "password": "PassW0rd",
     "role": "user"
 }
 
 EXISTING_USER = {
     "name": "Test",
     "email": "user@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "PassW0rd"
 }
 
 SOME_MISSING = {
@@ -57,8 +55,7 @@ USER_NOT_EXIST_LOGIN = {
 CREATE_TEST_USER = {
     "name": "Test",
     "email": "test@email.com",
-    "password": "password",
-    "role": "user"
+    "password": "Passw0rd"
 }
 
 # Data for parcels

@@ -25,7 +25,7 @@ def client():
 @pytest.fixture(scope='session')
 def auth_token(client):
 
-    login = {"email": "test@email.com", "password": "password"}
+    login = {"email": "test@email.com", "password": "Passw0rd"}
 
     res = client.post(
         "/api/v2/auth/login",
