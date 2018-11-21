@@ -58,3 +58,22 @@ class TestParcelViews(object):
             content_type='application/json;charset=utf-8')
 
         assert response.status_code == 400
+
+    def test_admin_get_all_parcels(self, client, admin_token):
+        response = client.get(
+            "/api/v2/parcels",
+            headers=dict(Authorization="Bearer " + admin_token))
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 200
+        assert 'pending delivery' in str(res_data['Data'])
+
+    def test_user_get_all_parcels(self, client, auth_token):
+        response = client.get(
+            "/api/v2/parcels",
+            headers=dict(Authorization="Bearer " + auth_token))
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 403
+        assert 'You are not authorised to access this resource' in str(
+            res_data['Message'])

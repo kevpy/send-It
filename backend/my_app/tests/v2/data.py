@@ -58,6 +58,13 @@ CREATE_TEST_USER = {
     "password": "Passw0rd"
 }
 
+CREATE_TEST_ADMIN = {
+    "name": "Admin",
+    "email": "admin@email.com",
+    "password": "Passw0rd",
+    "role": "admin"
+}
+
 # Data for parcels
 CREATE_PARCEL = {
     "recipient": "Kezzy",
