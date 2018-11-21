@@ -57,3 +57,16 @@ class ParcelModel:
         cursor.execute(query)
         parcels = cursor.fetchall()
         return parcels
+
+    def change_status(self, parcel_id):
+        """This function changes the status of a parcel"""
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        query = """UPDATE parcels
+                   SET status = '{}'
+                   WHERE parcel_id = {}
+                   AND status = '{}'
+                   """.format('delivered',
+                              parcel_id,
+                              'pending delivery')
+        cursor.execute(query)
+        return self.db.commit()

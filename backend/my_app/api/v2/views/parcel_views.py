@@ -31,17 +31,12 @@ class Parcels(Resource):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify({
-                "Message": is_valid
-            }), 400)
+            return make_response(jsonify({"Message": is_valid}), 400)
 
         parcel = ParcelModel()
         my_parcel = parcel.add_parcel(data, user_id)
 
-        payload = {
-            "Message": "Parcel Created",
-            "data": my_parcel
-        }
+        payload = {"Message": "Parcel Created", "data": my_parcel}
         res = make_response(jsonify(payload), 201)
         return res
 
@@ -54,10 +49,39 @@ class Parcels(Resource):
         check_role = user.check_admin(user_email)
 
         if not check_role:
-            return make_response(jsonify({
-                "Message": "You are not authorised to access this resource"
-            }), 403)
+            return make_response(
+                jsonify({
+                    "Message":
+                    "You are not authorised to access this resource"
+                }), 403)
         parcels = parcel.get_all()
-        return make_response(jsonify({
-            "Data": parcels
-        }), 200)
+        return make_response(jsonify({"Data": parcels}), 200)
+
+
+class ChangeStatus(Resource):
+    """
+    This class changes the status of a parcel order from
+    pending delivery to delivered
+    """
+
+    @jwt_required
+    def put(self, parcel_id):
+        """This function allows admin to change status of all parcels"""
+        parcel = ParcelModel()
+        print(parcel_id)
+
+        user = User()
+        user_email = get_jwt_identity()
+        check_role = user.check_admin(user_email)
+
+        if not check_role:
+            return make_response(
+                jsonify({
+                    "Message":
+                    "You are not authorised to access this resource"
+                }), 403)
+        parcel.change_status(parcel_id)
+        return make_response(
+            jsonify({
+                "Message": "Successfully updated status"
+            }), 202)
