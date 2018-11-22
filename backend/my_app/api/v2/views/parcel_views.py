@@ -4,9 +4,9 @@ Creates views for parcels. These are POST, GET, PUT
 
 from flask import request, make_response, jsonify
 from flask_restful import Resource
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required
+from .auth_views import check_role, check_user
 from ..models.parcel import ParcelModel
-from ..models.user import User
 from ..utils.schemas import ParceCreateSchema, LocationSchema
 from ..utils.validators import validate_json
 
@@ -21,9 +21,8 @@ class Parcels(Resource):
         """Saves a new parcel item
         :return: Returns a json response
         """
-        user = User()
-        user_email = get_jwt_identity()
-        get_user = user.get_user(user_email)
+
+        get_user = check_user()
         user_id = get_user['user_id']
 
         schema = ParceCreateSchema()
@@ -44,11 +43,9 @@ class Parcels(Resource):
     def get(self):
         parcel = ParcelModel()
 
-        user = User()
-        user_email = get_jwt_identity()
-        check_role = user.check_admin(user_email)
+        role = check_role()
 
-        if not check_role:
+        if not role:
             return make_response(
                 jsonify({
                     "Message":
@@ -69,11 +66,9 @@ class ChangeStatus(Resource):
         """This function allows admin to change status of all parcels"""
         parcel = ParcelModel()
 
-        user = User()
-        user_email = get_jwt_identity()
-        check_role = user.check_admin(user_email)
+        role = check_role()
 
-        if not check_role:
+        if not role:
             return make_response(
                 jsonify({
                     "Message":
@@ -105,11 +100,9 @@ class ChangePresentLocation(Resource):
         if is_valid is not None:
             return make_response(jsonify({"Message": is_valid}), 400)
 
-        user = User()
-        user_email = get_jwt_identity()
-        check_role = user.check_admin(user_email)
+        role = check_role()
 
-        if not check_role:
+        if not role:
             return make_response(
                 jsonify({
                     "Message":
@@ -141,9 +134,7 @@ class ChangeDestination(Resource):
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
 
-        user = User()
-        user_email = get_jwt_identity()
-        get_user = user.get_user(user_email)
+        get_user = check_user()
         user_id = get_user['user_id']
 
         if is_valid is not None:
@@ -179,9 +170,8 @@ class CancelOrder(Resource):
     def put(self, parcel_id):
         """This function allows admin to change status of all parcels"""
         parcel = ParcelModel()
-        user = User()
-        user_email = get_jwt_identity()
-        get_user = user.get_user(user_email)
+
+        get_user = check_user()
         user_id = get_user['user_id']
 
         my_parcel = parcel.get_one_parcel(parcel_id)
@@ -204,3 +194,34 @@ class CancelOrder(Resource):
                 "Message": "Successfully cancelled the parcel order",
                 "data": change
             }), 202)
+
+
+class GetSpecificOrder(Resource):
+    """ This Class gets a specific parcel order"""
+
+    @jwt_required
+    def get(self, parcel_id):
+        """
+        This function allows a user to get a specific order they own.
+        Also allows an admin to get any specific order
+        :param parcel_id:
+        :return: returns a json response
+        """
+        parcel = ParcelModel()
+
+        get_user = check_user()
+        user_id = get_user['user_id']
+        user_role = get_user['user_role']
+
+        my_parcel = parcel.get_one_parcel(parcel_id)
+        if my_parcel is None:
+            return make_response(jsonify({
+                "Message": "Parcel requested does not exist"
+            }), 404)
+        if user_id != my_parcel['user_id'] or user_role.lower() != 'admin':
+            return make_response(jsonify({
+                "Message": "You are not authorised to access this resource"
+            }), 401)
+        return make_response(jsonify({
+            "Data": my_parcel
+        }))

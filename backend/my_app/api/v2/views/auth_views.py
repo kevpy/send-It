@@ -4,7 +4,7 @@ Both signup and login views.
 """
 from flask import jsonify, make_response, request
 from flask_restful import Resource
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, get_jwt_identity
 from ..models.user import User
 from ..utils.schemas import UserPostSchema, UserLoginSchema
 from ..utils.validators import validate_json
@@ -73,3 +73,17 @@ class Login(Resource):
             "Message": "Successful login",
             "token": access_token
         }), 200)
+
+
+def check_role():
+    user = User()
+    user_email = get_jwt_identity()
+    role = user.check_admin(user_email)
+    return role
+
+
+def check_user():
+    user = User()
+    user_email = get_jwt_identity()
+    get_user = user.get_user(user_email)
+    return get_user
