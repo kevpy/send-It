@@ -3,6 +3,7 @@ This test class tests the parcel_views
 """
 from flask import json
 from .data import CREATE_PARCEL, EMPTY_DATA, EMPTY_STRING_PARCEL
+from .data import CHNG_DSTN, CHNG_DSTN_INVALID
 
 
 class TestParcelViews(object):
@@ -96,3 +97,37 @@ class TestParcelViews(object):
         assert response.status_code == 403
         assert 'You are not authorised to access this resource' in str(
             res_data['Message'])
+
+    def test_admin_change_p_location(self, client, admin_token):
+        response = client.put(
+            "/api/v2/parcels/1/status",
+            data=json.dumps(CHNG_DSTN),
+            headers=dict(Authorization="Bearer " + admin_token),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 202
+        assert 'Successfully updated status' in str(res_data['Message'])
+
+    def test_non_admin_change_p_location(self, client, auth_token):
+        response = client.put(
+            "/api/v2/parcels/1/status",
+            data=json.dumps(CHNG_DSTN),
+            headers=dict(Authorization="Bearer " + auth_token),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 403
+        assert 'You are not authorised to access this resource' in str(
+            res_data['Message'])
+
+    def test_invalid_data_change_p_location(self, client, admin_token):
+        response = client.put(
+            "/api/v2/parcels/1/status",
+            data=json.dumps(CHNG_DSTN_INVALID),
+            headers=dict(Authorization="Bearer " + admin_token),
+            content_type='application/json;charset=utf-8')
+
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 202
+        assert 'Successfully updated status' in str(res_data['Message'])

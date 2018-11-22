@@ -58,6 +58,19 @@ class ParcelModel:
         parcels = cursor.fetchall()
         return parcels
 
+    def get_one_parcel(self, parcel_id):
+        """
+        Takes in a user and returns a user
+        :param email:
+        :return: Returns a user
+        """
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        cursor.execute(
+            """SELECT * FROM parcels
+               WHERE parcel_id='{}'""".format(parcel_id))
+        data = cursor.fetchone()
+        return data
+
     def change_status(self, parcel_id):
         """This function changes the status of a parcel"""
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
@@ -68,5 +81,16 @@ class ParcelModel:
                    """.format('delivered',
                               parcel_id,
                               'pending delivery')
+        cursor.execute(query)
+        return self.db.commit()
+
+    def change_present_location(self, parcel_id, current_location):
+        """This function changes the status of a parcel"""
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        query = """UPDATE parcels
+                   SET current_location = '{}'
+                   WHERE parcel_id = {}
+                   """.format(parcel_id,
+                              current_location)
         cursor.execute(query)
         return self.db.commit()

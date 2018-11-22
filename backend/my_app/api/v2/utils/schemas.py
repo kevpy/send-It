@@ -29,3 +29,10 @@ class ParceCreateSchema(Schema):
     destination = fields.String(required=True, validate=is_empty)
     weight = fields.Integer(required=True)
     price = fields.Integer(required=True)
+
+
+class LocationSchema(Schema):
+    """
+    This class creates a validation schema for Location.
+    """
+    location = fields.String(required=True, validate=[is_empty, is_digit])

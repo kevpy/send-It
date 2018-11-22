@@ -91,3 +91,12 @@ MISSING_OPTIONS = {
     "price": 2,
     "weight": 5
 }
+
+# Change destination
+CHNG_DSTN = {
+    "location": "Nairobi"
+}
+
+CHNG_DSTN_INVALID = {
+    "location": ""
+}
