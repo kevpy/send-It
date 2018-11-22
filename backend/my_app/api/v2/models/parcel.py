@@ -82,15 +82,38 @@ class ParcelModel:
                               parcel_id,
                               'pending delivery')
         cursor.execute(query)
-        return self.db.commit()
+        self.db.commit()
+        parcel = self.get_one_parcel(parcel_id)
+        return parcel
 
-    def change_present_location(self, parcel_id, current_location):
+    def change_present_location(self, current_location, parcel_id):
         """This function changes the status of a parcel"""
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
                    SET current_location = '{}'
                    WHERE parcel_id = {}
-                   """.format(parcel_id,
-                              current_location)
+                   """.format(current_location,
+                              parcel_id)
         cursor.execute(query)
-        return self.db.commit()
+        self.db.commit()
+        parcel = self.get_one_parcel(parcel_id)
+        return parcel
+
+    def change_destination(self, destination, parcel_id):
+        """
+        This method updates the destination of a parcel
+        :param parcel_id:
+        :param destination:
+        :return: Returns none
+        """
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        query = """UPDATE parcels
+                           SET destination = '{}'
+                           WHERE parcel_id = {}
+                           AND status = '{}'
+                           """.format(destination,
+                                      parcel_id,
+                                      'pending delivery')
+        cursor.execute(query)
+        parcel = self.get_one_parcel(parcel_id)
+        return parcel
