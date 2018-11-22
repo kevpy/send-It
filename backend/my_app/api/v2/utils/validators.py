@@ -1,6 +1,24 @@
 """This modules provides validators for models"""
 import re
 from marshmallow import ValidationError
+from flask import jsonify, make_response
+
+
+def validate_url_params(value):
+    """
+    Takes in a url wild card and checks if it is an id.
+    :param value:
+    :raises: Raises an exception
+    """
+    try:
+        my_id = int(value)
+    except Exception:
+        return make_response(
+            jsonify(
+                {
+                    "Message": "Please provide a valid parcel id - integer "
+                }
+            ), 400)
 
 
 def is_empty(value):
@@ -34,7 +52,6 @@ def is_strong(value):
     """
     pattern = re.compile("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{6,})")
     if pattern.match(value) is None:
-        print(value)
         raise ValidationError(
             'Value should be at least 1 digit, 1 lower, 1 uppercase and 6 characters long')
 

@@ -14,7 +14,7 @@ class Testuser(object):
     """
 
     def test_random_urls(self, client):
-        """Test a specific users all orders are found"""
+        """Test a random urls"""
 
         response = client.get(
             "/api/v2/auth/signup/jbhjjjjjj")
@@ -35,7 +35,7 @@ class Testuser(object):
         assert 'user@email.com' in str(res_data['data'])
 
     def test_invalid_registration(self, client):
-        """ This method tests for a valid registration"""
+        """ This method tests for a invalid registration"""
 
         response = client.post(
             "/api/v2/auth/signup",
@@ -46,7 +46,7 @@ class Testuser(object):
         assert 'Not a valid email address' in str(res_data['Message'])
 
     def test_user_exists(self, client):
-        """ This method tests for a valid registration"""
+        """ This method tests if a user is previously registered"""
 
         response = client.post(
             "/api/v2/auth/signup",
@@ -58,7 +58,7 @@ class Testuser(object):
         assert 'User with given email address exist' in res_data['Message']
 
     def test_empty_post_data(self, client):
-        """ This method tests for a valid registration"""
+        """ This method tests empty registration post data"""
 
         response = client.post(
             "/api/v2/auth/signup",
@@ -69,7 +69,7 @@ class Testuser(object):
         assert 'Missing data for required field.' in str(res_data['Message'])
 
     def test_some_missing_data(self, client):
-        """ This method tests for a valid registration"""
+        """ This method tests some missing post data"""
 
         response = client.post(
             "/api/v2/auth/signup",
@@ -80,7 +80,7 @@ class Testuser(object):
         assert 'Missing data for required field.' in str(res_data['Message'])
 
     def test_empty_strings_in_data(self, client):
-        """ This method tests for a valid registration"""
+        """ This method tests for empty strings in post data"""
 
         response = client.post(
             "/api/v2/auth/signup",
@@ -102,7 +102,7 @@ class Testuser(object):
         assert 'Not a valid email address.' in str(res_data['Message'])
 
     def test_wrong_login_password(self, client):
-        """ This method tests for a invalid password"""
+        """ This method tests for a wrong password"""
 
         response = client.post(
             "/api/v2/auth/login",
@@ -124,3 +124,13 @@ class Testuser(object):
         res_data = json.loads(response.data.decode())
         assert response.status_code == 404
         assert "User doesn't exists" in res_data['Message']
+
+    def test_no_token(self, client):
+        """Test a random urls"""
+
+        response = client.get(
+            "/api/v2/parcels")
+        res_data = json.loads(response.get_data(as_text=True))
+        assert response.status_code == 400
+        assert 'Authorization token is needed' in str(res_data[
+            'Message'])
