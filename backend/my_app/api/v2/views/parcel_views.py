@@ -204,3 +204,35 @@ class CancelOrder(Resource):
                 "Message": "Successfully cancelled the parcel order",
                 "data": change
             }), 202)
+
+
+class GetSpecificOrder(Resource):
+    """ This Class gets a specific parcel order"""
+
+    @jwt_required
+    def get(self, parcel_id):
+        """
+        This function allows a user to get a specific order they own.
+        Also allows an admin to get any specific order
+        :param parcel_id:
+        :return: returns a json response
+        """
+        parcel = ParcelModel()
+        user = User()
+        user_email = get_jwt_identity()
+        get_user = user.get_user(user_email)
+        user_id = get_user['user_id']
+        user_role = get_user['user_role']
+
+        my_parcel = parcel.get_one_parcel(parcel_id)
+        if my_parcel is None:
+            return make_response(jsonify({
+                "Message": "Parcel requested does not exist"
+            }), 404)
+        if user_id != my_parcel['user_id'] or user_role.lower() != 'admin':
+            return make_response(jsonify({
+                "Message": "Unauthorized, you cannot cancel this order"
+            }), 401)
+        return make_response(jsonify({
+            "Data": my_parcel
+        }))
