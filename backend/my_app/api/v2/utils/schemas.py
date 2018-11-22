@@ -28,7 +28,7 @@ class ParceCreateSchema(Schema):
     pickup_location = fields.String(required=True, validate=is_empty)
     destination = fields.String(required=True, validate=is_empty)
     weight = fields.Integer(required=True)
-    price = fields.Integer(required=True)
+    # price = fields.Integer(required=True)
 
 
 class LocationSchema(Schema):

@@ -20,7 +20,7 @@ class User():
         :return:
         """
         name = data['name']
-        email = data['email']
+        email = data['email'].lower()
         password = generate_password_hash(data['password'])
 
         if len(data) is 4:

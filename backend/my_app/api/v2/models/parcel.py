@@ -23,7 +23,7 @@ class ParcelModel:
         pickup_location = data['pickup_location']
         destination = data['destination']
         weight = data['weight']
-        price = data['price']
+        price = weight * 2
 
         parcel = {
             'user_id': user_id,

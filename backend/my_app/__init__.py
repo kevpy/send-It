@@ -38,4 +38,8 @@ def create_app(config_name):
             "Message": "Unauthorized, your token is expired."
         }), 401
 
+    @app.route('/')
+    def home():
+        return 'Welcome to SendIt app'
+
     return app
