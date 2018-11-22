@@ -61,7 +61,7 @@ class ParcelModel:
     def get_one_parcel(self, parcel_id):
         """
         Takes in a user and returns a user
-        :param email:
+        :param parcel_id:
         :return: Returns a user
         """
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
@@ -104,7 +104,7 @@ class ParcelModel:
         This method updates the destination of a parcel
         :param parcel_id:
         :param destination:
-        :return: Returns none
+        :return: Returns parcel
         """
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
@@ -115,5 +115,24 @@ class ParcelModel:
                                       parcel_id,
                                       'pending delivery')
         cursor.execute(query)
+        parcel = self.get_one_parcel(parcel_id)
+        return parcel
+
+    def cancel_order(self, parcel_id):
+        """
+        This function cancels an order if it is yet to be delivered
+        :param parcel_id:
+        :return: Returns a parcel
+        """
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        query = """UPDATE parcels
+                           SET status = '{}'
+                           WHERE parcel_id = {}
+                           AND status = '{}'
+                           """.format('cancelled',
+                                      parcel_id,
+                                      'pending delivery')
+        cursor.execute(query)
+        self.db.commit()
         parcel = self.get_one_parcel(parcel_id)
         return parcel

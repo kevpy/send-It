@@ -126,6 +126,7 @@ class ChangePresentLocation(Resource):
                 "data": change
             }), 202)
 
+
 class ChangeDestination(Resource):
     """
     This class allows a user to change the destination of a parcel order
@@ -140,6 +141,11 @@ class ChangeDestination(Resource):
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
 
+        user = User()
+        user_email = get_jwt_identity()
+        get_user = user.get_user(user_email)
+        user_id = get_user['user_id']
+
         if is_valid is not None:
             return make_response(jsonify({"Message": is_valid}), 400)
 
@@ -148,13 +154,53 @@ class ChangeDestination(Resource):
             return make_response(jsonify({
                 "Message": "Parcel does not exist"
             }), 404)
-        if my_parcel['status'] == 'delivered' or my_parcel['status'] == 'canceled':
+        if my_parcel['user_id'] != user_id:
             return make_response(jsonify({
-                "Message": "Parcel is already delivered or canceled"
+                "Message": "Unauthorized, you cannot cancel this order"
+            }), 401)
+        if my_parcel['status'] == 'delivered' or my_parcel['status'] == 'cancelled':
+            return make_response(jsonify({
+                "Message": "Parcel is already delivered or cancelled"
             }), 405)
         change = parcel.change_destination(data['location'], parcel_id)
         return make_response(
             jsonify({
                 "Message": "Successfully updated the destination",
+                "data": change
+            }), 202)
+
+
+class CancelOrder(Resource):
+    """
+    This class allows a user to change the destination of a parcel order
+    """
+
+    @jwt_required
+    def put(self, parcel_id):
+        """This function allows admin to change status of all parcels"""
+        parcel = ParcelModel()
+        user = User()
+        user_email = get_jwt_identity()
+        get_user = user.get_user(user_email)
+        user_id = get_user['user_id']
+
+        my_parcel = parcel.get_one_parcel(parcel_id)
+        if my_parcel is None:
+            return make_response(jsonify({
+                "Message": "Parcel does not exist"
+            }), 404)
+        if my_parcel['user_id'] != user_id:
+            return make_response(jsonify({
+                "Message": "Unauthorized, you cannot cancel this order"
+            }), 401)
+        if my_parcel['status'] == 'delivered' or \
+                my_parcel['status'] == 'cancelled':
+            return make_response(jsonify({
+                "Message": "Parcel is already delivered or canceled"
+            }), 405)
+        change = parcel.cancel_order(parcel_id)
+        return make_response(
+            jsonify({
+                "Message": "Successfully cancelled the parcel order",
                 "data": change
             }), 202)

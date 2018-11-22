@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask_restful import Api
 from .views.auth_views import Register, Login
-from .views.parcel_views import (Parcels, ChangeStatus,
+from .views.parcel_views import (Parcels, ChangeStatus, CancelOrder,
                                  ChangePresentLocation, ChangeDestination)
 
 version2_bp_auth = Blueprint('api_v2', __name__)
@@ -16,3 +16,4 @@ api_v2.add_resource(Parcels, '/parcels')
 api_v2.add_resource(ChangeStatus, '/parcels/<parcel_id>/status')
 api_v2.add_resource(ChangePresentLocation, '/parcels/<parcel_id>/presentLocation')
 api_v2.add_resource(ChangeDestination, '/parcels/<parcel_id>/destination')
+api_v2.add_resource(CancelOrder, '/parcels/<parcel_id>/cancel')
