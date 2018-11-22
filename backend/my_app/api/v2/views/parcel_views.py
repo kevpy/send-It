@@ -52,7 +52,7 @@ class Parcels(Resource):
             return make_response(
                 jsonify({
                     "Message":
-                    "You are not authorised to access this resource"
+                        "You are not authorised to access this resource"
                 }), 403)
         parcels = parcel.get_all()
         return make_response(jsonify({"Data": parcels}), 200)
@@ -77,12 +77,13 @@ class ChangeStatus(Resource):
             return make_response(
                 jsonify({
                     "Message":
-                    "You are not authorised to access this resource"
+                        "You are not authorised to access this resource"
                 }), 403)
-        parcel.change_status(parcel_id)
+        change = parcel.change_status(parcel_id)
         return make_response(
             jsonify({
-                "Message": "Successfully updated status"
+                "Message": "Successfully updated status",
+                "data": change
             }), 202)
 
 
@@ -112,14 +113,48 @@ class ChangePresentLocation(Resource):
             return make_response(
                 jsonify({
                     "Message":
-                    "You are not authorised to access this resource"
+                        "You are not authorised to access this resource"
                 }), 403)
         if parcel.get_one_parcel(parcel_id) is None:
             return make_response(jsonify({
                 "Message": "Parcel does not exist"
             }), 404)
-        parcel.change_present_location(data['location'], parcel_id)
+        change = parcel.change_present_location(data['location'], parcel_id)
         return make_response(
             jsonify({
-                "Message": "Successfully updated present location"
+                "Message": "Successfully updated present location",
+                "data": change
+            }), 202)
+
+class ChangeDestination(Resource):
+    """
+    This class allows a user to change the destination of a parcel order
+    """
+
+    @jwt_required
+    def put(self, parcel_id):
+        """This function allows admin to change status of all parcels"""
+        parcel = ParcelModel()
+
+        schema = LocationSchema()
+        data = request.get_json() or {}
+        is_valid = validate_json(schema, data)
+
+        if is_valid is not None:
+            return make_response(jsonify({"Message": is_valid}), 400)
+
+        my_parcel = parcel.get_one_parcel(parcel_id)
+        if my_parcel is None:
+            return make_response(jsonify({
+                "Message": "Parcel does not exist"
+            }), 404)
+        if my_parcel['status'] == 'delivered' or my_parcel['status'] == 'canceled':
+            return make_response(jsonify({
+                "Message": "Parcel is already delivered or canceled"
+            }), 405)
+        change = parcel.change_destination(data['location'], parcel_id)
+        return make_response(
+            jsonify({
+                "Message": "Successfully updated the destination",
+                "data": change
             }), 202)
