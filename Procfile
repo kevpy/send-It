@@ -1,1 +1,1 @@
-web: gunicorn 'backend.my_app:create_app('production')'
+web: gunicorn 'backend.my_app:create_app("production")'
