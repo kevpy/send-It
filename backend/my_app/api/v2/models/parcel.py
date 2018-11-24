@@ -23,7 +23,7 @@ class ParcelModel:
         pickup_location = data['pickup_location']
         destination = data['destination']
         weight = data['weight']
-        price = data['price']
+        price = weight * 2
 
         parcel = {
             'user_id': user_id,
@@ -39,12 +39,15 @@ class ParcelModel:
                          recipient, weight, origin,
                          destination, price)
                   VALUES
-                       ({}, '{}', '{}', {}, '{}', '{}', {})
-                """.format(user_id, parcel_details,
-                           recipient, weight, pickup_location,
-                           destination, price)
+                       (%s, %s, %s, %s, %s, %s, %s)
+                """
         cursor = self.db.cursor()
-        cursor.execute(query, parcel)
+        cursor.execute(query,
+                       (user_id,
+                        parcel_details,
+                        recipient, weight,
+                        pickup_location,
+                        destination, price))
         self.db.commit()
 
         return parcel
@@ -58,7 +61,7 @@ class ParcelModel:
         parcels = cursor.fetchall()
         return parcels
 
-    def get_one_parcel(self, parcel_id):
+    def get_percel_by_id(self, parcel_id):
         """
         Takes in a user and returns a user
         :param parcel_id:
@@ -75,28 +78,25 @@ class ParcelModel:
         """This function changes the status of a parcel"""
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
-                   SET status = '{}'
-                   WHERE parcel_id = {}
-                   AND status = '{}'
-                   """.format('delivered',
-                              parcel_id,
-                              'pending delivery')
-        cursor.execute(query)
+                   SET status = %s
+                   WHERE parcel_id = %s
+                   """
+
+        cursor.execute(query, ('delivered', parcel_id))
         self.db.commit()
-        parcel = self.get_one_parcel(parcel_id)
+        parcel = self.get_percel_by_id(parcel_id)
         return parcel
 
     def change_present_location(self, current_location, parcel_id):
         """This function changes the status of a parcel"""
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
-                   SET current_location = '{}'
-                   WHERE parcel_id = {}
-                   """.format(current_location,
-                              parcel_id)
-        cursor.execute(query)
+                   SET current_location = %s
+                   WHERE parcel_id = %s
+                   """
+        cursor.execute(query, (current_location, parcel_id))
         self.db.commit()
-        parcel = self.get_one_parcel(parcel_id)
+        parcel = self.get_percel_by_id(parcel_id)
         return parcel
 
     def change_destination(self, destination, parcel_id):
@@ -108,14 +108,12 @@ class ParcelModel:
         """
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
-                           SET destination = '{}'
-                           WHERE parcel_id = {}
-                           AND status = '{}'
-                           """.format(destination,
-                                      parcel_id,
-                                      'pending delivery')
-        cursor.execute(query)
-        parcel = self.get_one_parcel(parcel_id)
+                           SET destination = %s
+                           WHERE parcel_id = %s
+                           AND status = %s
+                           """
+        cursor.execute(query, (destination, parcel_id, 'pending delivery'))
+        parcel = self.get_percel_by_id(parcel_id)
         return parcel
 
     def cancel_order(self, parcel_id):
@@ -126,13 +124,26 @@ class ParcelModel:
         """
         cursor = self.db.cursor(cursor_factory=RealDictCursor)
         query = """UPDATE parcels
-                           SET status = '{}'
-                           WHERE parcel_id = {}
-                           AND status = '{}'
-                           """.format('cancelled',
-                                      parcel_id,
-                                      'pending delivery')
-        cursor.execute(query)
+                           SET status = %s
+                           WHERE parcel_id = %s
+                           AND status = %s
+                           """
+        cursor.execute(query, ('cancelled', parcel_id, 'pending delivery'))
         self.db.commit()
-        parcel = self.get_one_parcel(parcel_id)
+        parcel = self.get_percel_by_id(parcel_id)
         return parcel
+
+    def get_user_parcels(self, user_id):
+        """
+        This functions gets all parcels that belong to one user
+        Takes in user_id as a parameter
+        :param user_id:
+        :return: Returns parcels
+        """
+        cursor = self.db.cursor(cursor_factory=RealDictCursor)
+        query = """SELECT * FROM parcels
+                    WHERE user_id = %s
+                """
+        cursor.execute(query, (user_id,))
+        parcels = cursor.fetchall()
+        return parcels

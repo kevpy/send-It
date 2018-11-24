@@ -27,7 +27,7 @@ class Register(Resource):
             return make_response(jsonify({
                 "Message": is_valid
             }), 400)
-        user_exist = user.get_user(data['email'])
+        user_exist = user.get_user(data['email'].lower())
         if user_exist is not None:
             return make_response(jsonify({
                 "Message": "User with given email address exist"

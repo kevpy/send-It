@@ -8,6 +8,7 @@ itsdangerous==1.1.0
 Jinja2==2.10
 MarkupSafe==1.0
 marshmallow==3.0.0b20
+psycopg2-binary
 PyJWT==1.6.4
 pytz==2018.7
 six==1.11.0

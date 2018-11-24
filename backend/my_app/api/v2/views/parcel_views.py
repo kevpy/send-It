@@ -8,7 +8,7 @@ from flask_jwt_extended import jwt_required
 from .auth_views import check_role, check_user
 from ..models.parcel import ParcelModel
 from ..utils.schemas import ParceCreateSchema, LocationSchema
-from ..utils.validators import validate_json
+from ..utils.validators import validate_json, validate_url_params
 
 
 class Parcels(Resource):
@@ -68,6 +68,10 @@ class ChangeStatus(Resource):
 
         role = check_role()
 
+        param = validate_url_params(parcel_id)
+        if param is not None:
+            return param
+
         if not role:
             return make_response(
                 jsonify({
@@ -97,6 +101,10 @@ class ChangePresentLocation(Resource):
         data = request.get_json() or {}
         is_valid = validate_json(schema, data)
 
+        param = validate_url_params(parcel_id)
+        if param is not None:
+            return param
+
         if is_valid is not None:
             return make_response(jsonify({"Message": is_valid}), 400)
 
@@ -108,7 +116,7 @@ class ChangePresentLocation(Resource):
                     "Message":
                         "You are not authorised to access this resource"
                 }), 403)
-        if parcel.get_one_parcel(parcel_id) is None:
+        if parcel.get_percel_by_id(parcel_id) is None:
             return make_response(jsonify({
                 "Message": "Parcel does not exist"
             }), 404)
@@ -120,7 +128,7 @@ class ChangePresentLocation(Resource):
             }), 202)
 
 
-class ChangeDestination(Resource):
+class ChangeOrderDestination(Resource):
     """
     This class allows a user to change the destination of a parcel order
     """
@@ -137,10 +145,14 @@ class ChangeDestination(Resource):
         get_user = check_user()
         user_id = get_user['user_id']
 
+        param = validate_url_params(parcel_id)
+        if param is not None:
+            return param
+
         if is_valid is not None:
             return make_response(jsonify({"Message": is_valid}), 400)
 
-        my_parcel = parcel.get_one_parcel(parcel_id)
+        my_parcel = parcel.get_percel_by_id(parcel_id)
         if my_parcel is None:
             return make_response(jsonify({
                 "Message": "Parcel does not exist"
@@ -174,7 +186,11 @@ class CancelOrder(Resource):
         get_user = check_user()
         user_id = get_user['user_id']
 
-        my_parcel = parcel.get_one_parcel(parcel_id)
+        param = validate_url_params(parcel_id)
+        if param is not None:
+            return param
+
+        my_parcel = parcel.get_percel_by_id(parcel_id)
         if my_parcel is None:
             return make_response(jsonify({
                 "Message": "Parcel does not exist"
@@ -191,7 +207,7 @@ class CancelOrder(Resource):
         change = parcel.cancel_order(parcel_id)
         return make_response(
             jsonify({
-                "Message": "Successfully cancelled the parcel order",
+                    "Message": "Successfully cancelled the parcel order",
                 "data": change
             }), 202)
 
@@ -209,19 +225,55 @@ class GetSpecificOrder(Resource):
         """
         parcel = ParcelModel()
 
+        param = validate_url_params(parcel_id)
+        if param is not None:
+            return param
+
         get_user = check_user()
         user_id = get_user['user_id']
         user_role = get_user['user_role']
 
-        my_parcel = parcel.get_one_parcel(parcel_id)
+        my_parcel = parcel.get_percel_by_id(parcel_id)
         if my_parcel is None:
             return make_response(jsonify({
                 "Message": "Parcel requested does not exist"
             }), 404)
-        if user_id != my_parcel['user_id'] or user_role.lower() != 'admin':
+
+        if int(user_id) != int(my_parcel['user_id']) and user_role.lower() != 'admin':
             return make_response(jsonify({
                 "Message": "You are not authorised to access this resource"
             }), 401)
         return make_response(jsonify({
-            "Data": my_parcel
+                "Data": my_parcel
         }))
+
+
+class GetAllUsersParcels(Resource):
+    """ This Resource returns all parcels that belong to a specific user """
+
+    @jwt_required
+    def get(self, user_id):
+        parcel = ParcelModel()
+
+        param = validate_url_params(user_id)
+        if param is not None:
+            return param
+
+        get_user = check_user()
+
+        if user_id != str(get_user['user_id']):
+            return make_response(jsonify({
+                "Message": "You are not authorised to access this resource"
+            }))
+        if get_user['user_id'] is None:
+            return make_response(jsonify({
+                "Message": "Sorry the specified user does not exist"
+            }), 404)
+        parcels = parcel.get_user_parcels(get_user['user_id'])
+        if parcels is None:
+            return make_response(jsonify({
+                "Message": "No parcels found for the user"
+            }), 404)
+        return make_response(jsonify({
+            "Parcels": parcels
+        }), 200)
