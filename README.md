@@ -28,7 +28,7 @@ If you wish to run a local instance please
 
 Here's the [documentation](https://documenter.getpostman.com/view/5866871/RzZAkybV) on how to consume the API on a local machine. Register then login to get a token or use the example login in the documentatin.
 
-All routes other than `api/v2/auth/login` and `api/v2/auth/register` need authorization
+All routes other than `api/v2/auth/login` and `api/v2/auth/signup` need authorization
 
 But first lets setup a working app
 
