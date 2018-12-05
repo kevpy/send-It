@@ -2,6 +2,7 @@
 This module creates authentication views.
 Both signup and login views.
 """
+import datetime
 from flask import jsonify, make_response, request
 from flask_restful import Resource
 from flask_jwt_extended import create_access_token, get_jwt_identity
@@ -66,7 +67,10 @@ class Login(Resource):
                 "Message": "Incorrect Password",
             }), 400)
 
-        access_token = create_access_token(identity=is_user['email'])
+        expires = datetime.timedelta(hours=12)
+        access_token = create_access_token(
+            identity=is_user['email'],
+            expires_delta=expires)
         del is_user['password']
         return make_response(jsonify({
             "Message": "Successful login",
