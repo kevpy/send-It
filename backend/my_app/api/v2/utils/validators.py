@@ -69,13 +69,28 @@ def is_digit(value):
 
 def validate_json(my_schema, json=None):
     """
-        This function takes in a schema and a json data object.
-        It then validate the json object from the schema.
-        :param my_schema:
-        :param json:
-        :return: Returns None, or a validation error message.
-        """
+    This function takes in a schema and a json data object.
+    It then validate the json object from the schema.
+    :param my_schema:
+    :param json:
+    :return: Returns None, or a validation error message.
+    """
     try:
         my_schema.load(json)
     except ValidationError as e:
         return e.messages
+
+
+def err_message(message):
+    """
+    This function takes in a Marshmallow error message.
+    It mutates the dict message into a simple dictionary
+    object to easily consume.
+    :param message:
+    :return: Returns a dictionary
+    """
+    msg = {}
+    for k, v in message.items():
+        msg[k] = v[0]
+    print(msg)
+    return make_response(jsonify(msg), 400)

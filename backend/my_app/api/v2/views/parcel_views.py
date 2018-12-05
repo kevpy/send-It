@@ -8,7 +8,7 @@ from flask_jwt_extended import jwt_required
 from .auth_views import check_role, check_user
 from ..models.parcel import ParcelModel
 from ..utils.schemas import ParceCreateSchema, LocationSchema
-from ..utils.validators import validate_json, validate_url_params
+from ..utils.validators import validate_json, validate_url_params, err_message
 
 
 class Parcels(Resource):
@@ -30,7 +30,7 @@ class Parcels(Resource):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify({"Message": is_valid}), 400)
+            return err_message(is_valid)
 
         parcel = ParcelModel()
         my_parcel = parcel.add_parcel(data, user_id)
@@ -106,7 +106,7 @@ class ChangePresentLocation(Resource):
             return param
 
         if is_valid is not None:
-            return make_response(jsonify({"Message": is_valid}), 400)
+            return err_message(is_valid)
 
         role = check_role()
 
@@ -150,7 +150,7 @@ class ChangeOrderDestination(Resource):
             return param
 
         if is_valid is not None:
-            return make_response(jsonify({"Message": is_valid}), 400)
+            return err_message(is_valid)
 
         my_parcel = parcel.get_percel_by_id(parcel_id)
         if my_parcel is None:

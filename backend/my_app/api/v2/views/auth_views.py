@@ -7,7 +7,7 @@ from flask_restful import Resource
 from flask_jwt_extended import create_access_token, get_jwt_identity
 from ..models.user import User
 from ..utils.schemas import UserPostSchema, UserLoginSchema
-from ..utils.validators import validate_json
+from ..utils.validators import validate_json, err_message
 
 
 class Register(Resource):
@@ -24,9 +24,8 @@ class Register(Resource):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify({
-                "Message": is_valid
-            }), 400)
+            return err_message(is_valid)
+
         user_exist = user.get_user(data['email'].lower())
         if user_exist is not None:
             return make_response(jsonify({
@@ -53,22 +52,21 @@ class Login(Resource):
         is_valid = validate_json(schema, data)
 
         if is_valid is not None:
-            return make_response(jsonify({
-                "Message": is_valid,
-            }), 400)
-        check_user = user.get_user(data['email'])
-        if not check_user:
+            return err_message(is_valid)
+
+        is_user = user.get_user(data['email'])
+        if not is_user:
             return make_response(jsonify({
                 "Message": "User doesn't exists"
             }), 404)
         check_pass = user.verify_password(
-            data['password'], check_user['password'])
+            data['password'], is_user['password'])
         if not check_pass:
             return make_response(jsonify({
                 "Message": "Incorrect Password",
             }), 400)
 
-        access_token = create_access_token(identity=check_user['email'])
+        access_token = create_access_token(identity=is_user['email'])
         return make_response(jsonify({
             "Message": "Successful login",
             "token": access_token
@@ -76,6 +74,11 @@ class Login(Resource):
 
 
 def check_role():
+    """
+    This function checks if the identity of a user from a provided
+    token has the role of an admin
+    :return: Returns role
+    """
     user = User()
     user_email = get_jwt_identity()
     role = user.check_admin(user_email)
@@ -83,6 +86,10 @@ def check_role():
 
 
 def check_user():
+    """
+    This function gets the user identity from a provided token
+    :return: Returns a user
+    """
     user = User()
     user_email = get_jwt_identity()
     get_user = user.get_user(user_email)
