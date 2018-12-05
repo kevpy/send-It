@@ -35,7 +35,7 @@ class TestParcelViews(object):
 
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
-        assert 'Missing data for required field.' in str(res_data['Message'])
+        assert 'Missing data for required field.' in str(res_data['weight'])
 
     def test_empty_string(self, client, auth_token):
         """ Tests for case where empty json string is posted"""
@@ -48,7 +48,8 @@ class TestParcelViews(object):
 
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
-        assert 'Value provided cannot be empty' in str(res_data['Message'])
+        assert 'Value provided cannot be empty' in str(
+            res_data['pickup_location'])
 
     def test_no_data(self, client, auth_token):
         """ Tests for case where no json data is posted"""
@@ -118,7 +119,7 @@ class TestParcelViews(object):
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
         assert 'Value provided cannot be empty' in str(res_data[
-            'Message'])
+            'location'])
 
     def test_order_not_exist_change_destination(self, client, admin_token):
         """This method test for non existing parcel in change destination"""
@@ -200,7 +201,7 @@ class TestParcelViews(object):
 
         res_data = json.loads(response.get_data(as_text=True))
         assert response.status_code == 400
-        assert 'Value provided cannot be empty' in str(res_data['Message'])
+        assert 'Value provided cannot be empty' in str(res_data['location'])
 
     def test_invalid_url_change_p_location(self, client, admin_token):
         """This method tests for invalid url in change of present location"""

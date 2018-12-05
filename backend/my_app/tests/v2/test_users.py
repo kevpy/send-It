@@ -43,7 +43,7 @@ class Testuser(object):
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))
-        assert 'Not a valid email address' in str(res_data['Message'])
+        assert 'Not a valid email address' in str(res_data['email'])
 
     def test_user_exists(self, client):
         """ This method tests if a user is previously registered"""
@@ -66,7 +66,7 @@ class Testuser(object):
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))
-        assert 'Missing data for required field.' in str(res_data['Message'])
+        assert 'Missing data for required field.' in str(res_data['email'])
 
     def test_some_missing_data(self, client):
         """ This method tests some missing post data"""
@@ -77,7 +77,7 @@ class Testuser(object):
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))
-        assert 'Missing data for required field.' in str(res_data['Message'])
+        assert 'Missing data for required field.' in str(res_data['email'])
 
     def test_empty_strings_in_data(self, client):
         """ This method tests for empty strings in post data"""
@@ -88,7 +88,7 @@ class Testuser(object):
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))
-        assert 'Value provided cannot be empty' in str(res_data['Message'])
+        assert 'Value provided cannot be empty' in str(res_data['name'])
 
     def test_invalid_email_login(self, client):
         """ This method tests for a invalid email address"""
@@ -99,7 +99,7 @@ class Testuser(object):
             content_type='application/json;charset=utf-8')
 
         res_data = json.loads(response.get_data(as_text=True))
-        assert 'Not a valid email address.' in str(res_data['Message'])
+        assert 'Not a valid email address.' in str(res_data['email'])
 
     def test_wrong_login_password(self, client):
         """ This method tests for a wrong password"""
