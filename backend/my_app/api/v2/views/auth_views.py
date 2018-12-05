@@ -67,8 +67,10 @@ class Login(Resource):
             }), 400)
 
         access_token = create_access_token(identity=is_user['email'])
+        del is_user['password']
         return make_response(jsonify({
             "Message": "Successful login",
+            "data": is_user,
             "token": access_token
         }), 200)
 
